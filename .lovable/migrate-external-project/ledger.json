@@ -1,0 +1,93 @@
+[
+  {
+    "capability": "code",
+    "source": "attached ZIP",
+    "outcome": "migrate",
+    "status": "implemented",
+    "next_action": "Authenticated and provider checks pending where credentials or identities are absent."
+  },
+  {
+    "capability": "schema",
+    "source": "drizzle SQL",
+    "outcome": "migrate",
+    "status": "verified",
+    "next_action": "None; 53 products load in Cloud"
+  },
+  {
+    "capability": "records",
+    "source": "four bundled sample products; no production export",
+    "outcome": "migrate",
+    "status": "pending",
+    "next_action": "Request existing records export"
+  },
+  {
+    "capability": "auth identities",
+    "source": "not bundled",
+    "outcome": "migrate",
+    "status": "pending",
+    "next_action": "Request original user IDs and verified identity export"
+  },
+  {
+    "capability": "authorization",
+    "source": "user_roles and server role checks",
+    "outcome": "preserve",
+    "status": "implemented",
+    "next_action": "Authenticated and provider checks pending where credentials or identities are absent."
+  },
+  {
+    "capability": "uploaded file bytes",
+    "source": "CDN pointers and bundled photos",
+    "outcome": "preserve",
+    "status": "partially_verified",
+    "next_action": "Bundled photos restored; existing private customer files need export."
+  },
+  {
+    "capability": "external providers",
+    "source": "Stripe, Mercado Pago Pix, Lovable AI",
+    "outcome": "preserve",
+    "status": "pending",
+    "next_action": "Stripe and Mercado Pago keys required for live verification"
+  },
+  {
+    "capability": "public endpoints",
+    "source": "Stripe and Mercado Pago webhooks",
+    "outcome": "preserve",
+    "status": "implemented",
+    "next_action": "Authenticated and provider checks pending where credentials or identities are absent."
+  },
+  {
+    "capability": "callbacks",
+    "source": "auth/reset-password; checkout success",
+    "outcome": "preserve",
+    "status": "implemented",
+    "next_action": "Authenticated and provider checks pending where credentials or identities are absent."
+  },
+  {
+    "capability": "schedules",
+    "source": "none detected",
+    "outcome": "not_detected",
+    "status": "reviewed",
+    "next_action": "None"
+  },
+  {
+    "capability": "secrets",
+    "source": "not imported",
+    "outcome": "preserve",
+    "status": "pending",
+    "next_action": "Request STRIPE_RESTRICTED_API_KEY, STRIPE_WEBHOOK_SECRET, MERCADOPAGO_ACCESS_TOKEN, MERCADOPAGO_WEBHOOK_SECRET securely"
+  },
+  {
+    "capability": "cutover",
+    "source": "unpublished",
+    "outcome": "pending",
+    "status": "pending",
+    "next_action": "Publish and update Stripe endpoint"
+  },
+  {
+    "capability": "verification",
+    "source": "new Cloud stack",
+    "outcome": "verify",
+    "status": "partially_verified",
+    "next_action": "Quote with logo saved and read back; user migration and Stripe require external inputs."
+  }
+]

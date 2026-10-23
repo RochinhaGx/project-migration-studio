@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="Foto em breve">
+  <rect width="512" height="512" fill="#F3F0EB"/>
+  <g fill="none" stroke="#B9B1A6" stroke-width="10" stroke-linejoin="round" transform="translate(256 226)">
+    <path d="M0 -78 L72 -38 L72 42 L0 82 L-72 42 L-72 -38 Z"/>
+    <path d="M-72 -38 L0 2 L72 -38 M0 2 L0 82"/>
+  </g>
+  <text x="256" y="368" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="26" font-weight="600" letter-spacing="3" fill="#9A9188">FOTO EM BREVE</text>
+</svg>
