@@ -10,8 +10,8 @@
     "capability": "schema",
     "source": "drizzle SQL",
     "outcome": "migrate",
-    "status": "implemented",
-    "next_action": "Authenticated and provider checks pending where credentials or identities are absent."
+    "status": "verified",
+    "next_action": "None; 53 products load in Cloud"
   },
   {
     "capability": "records",
@@ -43,14 +43,14 @@
   },
   {
     "capability": "external providers",
-    "source": "Stripe and Lovable AI",
+    "source": "Stripe, Mercado Pago Pix, Lovable AI",
     "outcome": "preserve",
     "status": "pending",
-    "next_action": "Stripe credentials required for live verification"
+    "next_action": "Stripe and Mercado Pago keys required for live verification"
   },
   {
     "capability": "public endpoints",
-    "source": "Stripe webhook",
+    "source": "Stripe and Mercado Pago webhooks",
     "outcome": "preserve",
     "status": "implemented",
     "next_action": "Authenticated and provider checks pending where credentials or identities are absent."
@@ -74,7 +74,7 @@
     "source": "not imported",
     "outcome": "preserve",
     "status": "pending",
-    "next_action": "Configure retained Stripe keys securely"
+    "next_action": "Request STRIPE_RESTRICTED_API_KEY, STRIPE_WEBHOOK_SECRET, MERCADOPAGO_ACCESS_TOKEN, MERCADOPAGO_WEBHOOK_SECRET securely"
   },
   {
     "capability": "cutover",
