@@ -1,0 +1,1 @@
+COMMENT ON TABLE public.produtos IS '3DTech product catalog';

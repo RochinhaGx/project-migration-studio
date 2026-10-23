@@ -14,16 +14,217 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      pedidos: {
+        Row: {
+          codigo: string
+          created_at: string
+          email: string | null
+          entrega: Json | null
+          frete: number
+          id: string
+          itens: Json
+          metodo_pagamento: string
+          mp_payment_id: string | null
+          owner_id: string | null
+          pagador: Json | null
+          status: string
+          stripe_session_id: string | null
+          total: number
+        }
+        Insert: {
+          codigo?: string
+          created_at?: string
+          email?: string | null
+          entrega?: Json | null
+          frete?: number
+          id?: string
+          itens?: Json
+          metodo_pagamento?: string
+          mp_payment_id?: string | null
+          owner_id?: string | null
+          pagador?: Json | null
+          status?: string
+          stripe_session_id?: string | null
+          total?: number
+        }
+        Update: {
+          codigo?: string
+          created_at?: string
+          email?: string | null
+          entrega?: Json | null
+          frete?: number
+          id?: string
+          itens?: Json
+          metodo_pagamento?: string
+          mp_payment_id?: string | null
+          owner_id?: string | null
+          pagador?: Json | null
+          status?: string
+          stripe_session_id?: string | null
+          total?: number
+        }
+        Relationships: []
+      }
+      pedidos_sob_medida: {
+        Row: {
+          arquivo: string | null
+          contato: string
+          cor: string
+          created_at: string
+          descricao: string
+          dimensoes: Json | null
+          id: string
+          logo_arquivo: string | null
+          nome: string
+          owner_id: string | null
+        }
+        Insert: {
+          arquivo?: string | null
+          contato: string
+          cor?: string
+          created_at?: string
+          descricao: string
+          dimensoes?: Json | null
+          id?: string
+          logo_arquivo?: string | null
+          nome: string
+          owner_id?: string | null
+        }
+        Update: {
+          arquivo?: string | null
+          contato?: string
+          cor?: string
+          created_at?: string
+          descricao?: string
+          dimensoes?: Json | null
+          id?: string
+          logo_arquivo?: string | null
+          nome?: string
+          owner_id?: string | null
+        }
+        Relationships: []
+      }
+      produtos: {
+        Row: {
+          ativo: boolean
+          categoria: string
+          cores: Json
+          created_at: string
+          descricao: string
+          destaque: boolean
+          especificacoes: Json
+          id: string
+          imagens: string[]
+          materiais: string[]
+          modelo_3d: string | null
+          nome: string
+          preco: number
+          video_url: string | null
+        }
+        Insert: {
+          ativo?: boolean
+          categoria?: string
+          cores?: Json
+          created_at?: string
+          descricao?: string
+          destaque?: boolean
+          especificacoes?: Json
+          id?: string
+          imagens?: string[]
+          materiais?: string[]
+          modelo_3d?: string | null
+          nome: string
+          preco?: number
+          video_url?: string | null
+        }
+        Update: {
+          ativo?: boolean
+          categoria?: string
+          cores?: Json
+          created_at?: string
+          descricao?: string
+          destaque?: boolean
+          especificacoes?: Json
+          id?: string
+          imagens?: string[]
+          materiais?: string[]
+          modelo_3d?: string | null
+          nome?: string
+          preco?: number
+          video_url?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          display_name: string
+          id: string
+          preferences: Json
+        }
+        Insert: {
+          avatar_url?: string | null
+          display_name?: string
+          id: string
+          preferences?: Json
+        }
+        Update: {
+          avatar_url?: string | null
+          display_name?: string
+          id?: string
+          preferences?: Json
+        }
+        Relationships: []
+      }
+      quote_rate_limits: {
+        Row: {
+          key: string
+          last_submission: string
+        }
+        Insert: {
+          key: string
+          last_submission?: string
+        }
+        Update: {
+          key?: string
+          last_submission?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      claim_quote_slot: { Args: { client_key: string }; Returns: boolean }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +351,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
