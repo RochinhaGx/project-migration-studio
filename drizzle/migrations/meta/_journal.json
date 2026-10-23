@@ -1,5 +1,27 @@
 {
   "version": "7",
   "dialect": "postgresql",
-  "entries": []
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1791864352010,
+      "tag": "0000_studio_catalog",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1792510671506,
+      "tag": "0001_import_shopee_products",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792538434802,
+      "tag": "0002_pix_mercadopago_orders",
+      "breakpoints": true
+    }
+  ]
 }
