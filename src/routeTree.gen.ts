@@ -10,33 +10,227 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as CatalogoRouteImport } from './routes/catalogo'
+import { Route as PedidoConfirmadoRouteImport } from './routes/pedido-confirmado'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as SacolaRouteImport } from './routes/sacola'
+import { Route as SobMedidaRouteImport } from './routes/sob-medida'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedAdminPedidosRouteImport } from './routes/_authenticated/admin-pedidos'
+import { Route as AuthenticatedMeusPedidosRouteImport } from './routes/_authenticated/meus-pedidos'
+import { Route as PersonalizarIndexRouteImport } from './routes/personalizar.index'
+import { Route as PersonalizarModeloRouteImport } from './routes/personalizar.$modelo'
+import { Route as ProdutoIdRouteImport } from './routes/produto.$id'
+import { Route as ApiPublicStripeWebhookRouteImport } from './routes/api/public/stripe-webhook'
+import { Route as ApiPublicMercadopagoWebhookRouteImport } from './routes/api/public/mercadopago/webhook'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CatalogoRoute = CatalogoRouteImport.update({
+  id: '/catalogo',
+  path: '/catalogo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PedidoConfirmadoRoute = PedidoConfirmadoRouteImport.update({
+  id: '/pedido-confirmado',
+  path: '/pedido-confirmado',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SacolaRoute = SacolaRouteImport.update({
+  id: '/sacola',
+  path: '/sacola',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SobMedidaRoute = SobMedidaRouteImport.update({
+  id: '/sob-medida',
+  path: '/sob-medida',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAdminPedidosRoute =
+  AuthenticatedAdminPedidosRouteImport.update({
+    id: '/admin-pedidos',
+    path: '/admin-pedidos',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedMeusPedidosRoute =
+  AuthenticatedMeusPedidosRouteImport.update({
+    id: '/meus-pedidos',
+    path: '/meus-pedidos',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const PersonalizarIndexRoute = PersonalizarIndexRouteImport.update({
+  id: '/personalizar/',
+  path: '/personalizar/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PersonalizarModeloRoute = PersonalizarModeloRouteImport.update({
+  id: '/personalizar/$modelo',
+  path: '/personalizar/$modelo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProdutoIdRoute = ProdutoIdRouteImport.update({
+  id: '/produto/$id',
+  path: '/produto/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicStripeWebhookRoute = ApiPublicStripeWebhookRouteImport.update({
+  id: '/api/public/stripe-webhook',
+  path: '/api/public/stripe-webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicMercadopagoWebhookRoute =
+  ApiPublicMercadopagoWebhookRouteImport.update({
+    id: '/api/public/mercadopago/webhook',
+    path: '/api/public/mercadopago/webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/catalogo': typeof CatalogoRoute
+  '/pedido-confirmado': typeof PedidoConfirmadoRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/sacola': typeof SacolaRoute
+  '/sob-medida': typeof SobMedidaRoute
+  '/admin': typeof AuthenticatedAdminRoute
+  '/admin-pedidos': typeof AuthenticatedAdminPedidosRoute
+  '/meus-pedidos': typeof AuthenticatedMeusPedidosRoute
+  '/personalizar/$modelo': typeof PersonalizarModeloRoute
+  '/produto/$id': typeof ProdutoIdRoute
+  '/personalizar/': typeof PersonalizarIndexRoute
+  '/api/public/stripe-webhook': typeof ApiPublicStripeWebhookRoute
+  '/api/public/mercadopago/webhook': typeof ApiPublicMercadopagoWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/catalogo': typeof CatalogoRoute
+  '/pedido-confirmado': typeof PedidoConfirmadoRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/sacola': typeof SacolaRoute
+  '/sob-medida': typeof SobMedidaRoute
+  '/admin': typeof AuthenticatedAdminRoute
+  '/admin-pedidos': typeof AuthenticatedAdminPedidosRoute
+  '/meus-pedidos': typeof AuthenticatedMeusPedidosRoute
+  '/personalizar/$modelo': typeof PersonalizarModeloRoute
+  '/produto/$id': typeof ProdutoIdRoute
+  '/personalizar': typeof PersonalizarIndexRoute
+  '/api/public/stripe-webhook': typeof ApiPublicStripeWebhookRoute
+  '/api/public/mercadopago/webhook': typeof ApiPublicMercadopagoWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/catalogo': typeof CatalogoRoute
+  '/pedido-confirmado': typeof PedidoConfirmadoRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/sacola': typeof SacolaRoute
+  '/sob-medida': typeof SobMedidaRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/admin-pedidos': typeof AuthenticatedAdminPedidosRoute
+  '/_authenticated/meus-pedidos': typeof AuthenticatedMeusPedidosRoute
+  '/personalizar/$modelo': typeof PersonalizarModeloRoute
+  '/produto/$id': typeof ProdutoIdRoute
+  '/personalizar/': typeof PersonalizarIndexRoute
+  '/api/public/stripe-webhook': typeof ApiPublicStripeWebhookRoute
+  '/api/public/mercadopago/webhook': typeof ApiPublicMercadopagoWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/catalogo'
+    | '/pedido-confirmado'
+    | '/reset-password'
+    | '/sacola'
+    | '/sob-medida'
+    | '/admin'
+    | '/admin-pedidos'
+    | '/meus-pedidos'
+    | '/personalizar/$modelo'
+    | '/produto/$id'
+    | '/personalizar/'
+    | '/api/public/stripe-webhook'
+    | '/api/public/mercadopago/webhook'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/catalogo'
+    | '/pedido-confirmado'
+    | '/reset-password'
+    | '/sacola'
+    | '/sob-medida'
+    | '/admin'
+    | '/admin-pedidos'
+    | '/meus-pedidos'
+    | '/personalizar/$modelo'
+    | '/produto/$id'
+    | '/personalizar'
+    | '/api/public/stripe-webhook'
+    | '/api/public/mercadopago/webhook'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/catalogo'
+    | '/pedido-confirmado'
+    | '/reset-password'
+    | '/sacola'
+    | '/sob-medida'
+    | '/_authenticated/admin'
+    | '/_authenticated/admin-pedidos'
+    | '/_authenticated/meus-pedidos'
+    | '/personalizar/$modelo'
+    | '/produto/$id'
+    | '/personalizar/'
+    | '/api/public/stripe-webhook'
+    | '/api/public/mercadopago/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  CatalogoRoute: typeof CatalogoRoute
+  PedidoConfirmadoRoute: typeof PedidoConfirmadoRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  SacolaRoute: typeof SacolaRoute
+  SobMedidaRoute: typeof SobMedidaRoute
+  PersonalizarModeloRoute: typeof PersonalizarModeloRoute
+  ProdutoIdRoute: typeof ProdutoIdRoute
+  PersonalizarIndexRoute: typeof PersonalizarIndexRoute
+  ApiPublicStripeWebhookRoute: typeof ApiPublicStripeWebhookRoute
+  ApiPublicMercadopagoWebhookRoute: typeof ApiPublicMercadopagoWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +242,143 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/catalogo': {
+      id: '/catalogo'
+      path: '/catalogo'
+      fullPath: '/catalogo'
+      preLoaderRoute: typeof CatalogoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pedido-confirmado': {
+      id: '/pedido-confirmado'
+      path: '/pedido-confirmado'
+      fullPath: '/pedido-confirmado'
+      preLoaderRoute: typeof PedidoConfirmadoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sacola': {
+      id: '/sacola'
+      path: '/sacola'
+      fullPath: '/sacola'
+      preLoaderRoute: typeof SacolaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sob-medida': {
+      id: '/sob-medida'
+      path: '/sob-medida'
+      fullPath: '/sob-medida'
+      preLoaderRoute: typeof SobMedidaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin-pedidos': {
+      id: '/_authenticated/admin-pedidos'
+      path: '/admin-pedidos'
+      fullPath: '/admin-pedidos'
+      preLoaderRoute: typeof AuthenticatedAdminPedidosRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/meus-pedidos': {
+      id: '/_authenticated/meus-pedidos'
+      path: '/meus-pedidos'
+      fullPath: '/meus-pedidos'
+      preLoaderRoute: typeof AuthenticatedMeusPedidosRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/personalizar/': {
+      id: '/personalizar/'
+      path: '/personalizar'
+      fullPath: '/personalizar/'
+      preLoaderRoute: typeof PersonalizarIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/personalizar/$modelo': {
+      id: '/personalizar/$modelo'
+      path: '/personalizar/$modelo'
+      fullPath: '/personalizar/$modelo'
+      preLoaderRoute: typeof PersonalizarModeloRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/produto/$id': {
+      id: '/produto/$id'
+      path: '/produto/$id'
+      fullPath: '/produto/$id'
+      preLoaderRoute: typeof ProdutoIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/stripe-webhook': {
+      id: '/api/public/stripe-webhook'
+      path: '/api/public/stripe-webhook'
+      fullPath: '/api/public/stripe-webhook'
+      preLoaderRoute: typeof ApiPublicStripeWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/mercadopago/webhook': {
+      id: '/api/public/mercadopago/webhook'
+      path: '/api/public/mercadopago/webhook'
+      fullPath: '/api/public/mercadopago/webhook'
+      preLoaderRoute: typeof ApiPublicMercadopagoWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedAdminPedidosRoute: typeof AuthenticatedAdminPedidosRoute
+  AuthenticatedMeusPedidosRoute: typeof AuthenticatedMeusPedidosRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedAdminPedidosRoute: AuthenticatedAdminPedidosRoute,
+  AuthenticatedMeusPedidosRoute: AuthenticatedMeusPedidosRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
+  CatalogoRoute: CatalogoRoute,
+  PedidoConfirmadoRoute: PedidoConfirmadoRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
+  SacolaRoute: SacolaRoute,
+  SobMedidaRoute: SobMedidaRoute,
+  PersonalizarModeloRoute: PersonalizarModeloRoute,
+  ProdutoIdRoute: ProdutoIdRoute,
+  PersonalizarIndexRoute: PersonalizarIndexRoute,
+  ApiPublicStripeWebhookRoute: ApiPublicStripeWebhookRoute,
+  ApiPublicMercadopagoWebhookRoute: ApiPublicMercadopagoWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
