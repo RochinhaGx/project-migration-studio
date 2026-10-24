@@ -1,11 +1,11 @@
 {
   "version": 1,
-  "asset_id": "18e232a7-bd8f-4f4c-95b6-aa64148fb0e0",
-  "project_id": "a3efe80a-9d94-4fef-a59d-3a28e7238338",
-  "url": "/__l5e/assets-v1/18e232a7-bd8f-4f4c-95b6-aa64148fb0e0/custom-articulated.jpg",
-  "r2_key": "a/v1/a3efe80a-9d94-4fef-a59d-3a28e7238338/18e232a7-bd8f-4f4c-95b6-aa64148fb0e0/custom-articulated.jpg",
-  "original_filename": "custom-articulated.jpg",
-  "size": 97957,
-  "content_type": "image/jpeg",
-  "created_at": "2026-10-14T04:53:44Z"
+  "asset_id": "31d2b05d-3e3e-432e-b500-98f4590c4d2e",
+  "project_id": "3e96659d-e5e8-462e-bacb-544713021933",
+  "url": "/__l5e/assets-v1/31d2b05d-3e3e-432e-b500-98f4590c4d2e/articulated.png",
+  "r2_key": "a/v1/3e96659d-e5e8-462e-bacb-544713021933/31d2b05d-3e3e-432e-b500-98f4590c4d2e/articulated.png",
+  "original_filename": "articulated.png",
+  "size": 890091,
+  "content_type": "image/png",
+  "created_at": "2026-10-24T19:23:52Z"
 }
