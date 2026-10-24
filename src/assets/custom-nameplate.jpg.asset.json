@@ -1,11 +1,11 @@
 {
   "version": 1,
-  "asset_id": "0abf95d3-0943-4243-928b-8f438aacf730",
-  "project_id": "a3efe80a-9d94-4fef-a59d-3a28e7238338",
-  "url": "/__l5e/assets-v1/0abf95d3-0943-4243-928b-8f438aacf730/custom-nameplate.jpg",
-  "r2_key": "a/v1/a3efe80a-9d94-4fef-a59d-3a28e7238338/0abf95d3-0943-4243-928b-8f438aacf730/custom-nameplate.jpg",
-  "original_filename": "custom-nameplate.jpg",
-  "size": 77018,
-  "content_type": "image/jpeg",
-  "created_at": "2026-10-14T04:54:00Z"
+  "asset_id": "dc1b835e-f481-4450-a791-d991cebc8cdd",
+  "project_id": "3e96659d-e5e8-462e-bacb-544713021933",
+  "url": "/__l5e/assets-v1/dc1b835e-f481-4450-a791-d991cebc8cdd/nameplate.png",
+  "r2_key": "a/v1/3e96659d-e5e8-462e-bacb-544713021933/dc1b835e-f481-4450-a791-d991cebc8cdd/nameplate.png",
+  "original_filename": "nameplate.png",
+  "size": 667444,
+  "content_type": "image/png",
+  "created_at": "2026-10-24T19:23:49Z"
 }
