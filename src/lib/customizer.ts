@@ -1,20 +1,30 @@
-import keychain from '@/assets/custom-keychain.jpg.asset.json';
-import cabletag from '@/assets/custom-cabletag.jpg.asset.json';
-import articulated from '@/assets/custom-articulated.jpg.asset.json';
-import penholder from '@/assets/custom-penholder.jpg.asset.json';
-import frame from '@/assets/custom-frame.jpg.asset.json';
-import piggy from '@/assets/custom-piggy.jpg.asset.json';
-import nameplate from '@/assets/custom-nameplate.jpg.asset.json';
-import planter from '@/assets/custom-planter.jpg.asset.json';
+// Optional pointers may be absent or contain {} while an asset is replaced.
+// Glob imports let absent files fall back without breaking module resolution.
+const modelAssets = import.meta.glob<unknown>('../assets/custom-*.jpg.asset.json', {
+  eager: true,
+  import: 'default',
+});
+
+export function customizerAssetUrl(metadata: unknown): string {
+  if (typeof metadata !== 'object' || metadata === null || !('url' in metadata)) {
+    return '/produto-sem-foto.svg';
+  }
+  const url = metadata.url;
+  return typeof url === 'string' && url.trim().length > 0
+    ? url.trim()
+    : '/produto-sem-foto.svg';
+}
+
+const modelImage = (name: string) => customizerAssetUrl(modelAssets[`../assets/custom-${name}.jpg.asset.json`]);
 
 export type ShapeKind = 'keychain' | 'cabletag' | 'articulated' | 'penholder' | 'frame' | 'piggy' | 'nameplate' | 'planter';
 export type CustomModel = { slug: ShapeKind; nome: string; descricao: string; image: string; texto: string; tampa: boolean };
 
 export const CUSTOM_MODELS: CustomModel[] = [
-  { slug: 'keychain', nome: 'Chaveiro com nome', descricao: 'Nome em relevo sobre base com argola.', image: keychain.url, texto: 'Luna', tampa: false },
-  { slug: 'cabletag', nome: 'Etiqueta de cabo', descricao: 'Identifique seus cabos com estilo.', image: cabletag.url, texto: 'JOHN', tampa: true },
-  { slug: 'articulated', nome: 'Nome articulado', descricao: 'Letras unidas que se movimentam.', image: articulated.url, texto: 'ISABELLA', tampa: false },
-  { slug: 'nameplate', nome: 'Placa de mesa', descricao: 'Seu nome em destaque na mesa.', image: nameplate.url, texto: 'OLIVER', tampa: false },
+  { slug: 'keychain', nome: 'Chaveiro com nome', descricao: 'Nome em relevo sobre base com argola.', image: modelImage('keychain'), texto: 'Luna', tampa: false },
+  { slug: 'cabletag', nome: 'Etiqueta de cabo', descricao: 'Identifique seus cabos com estilo.', image: modelImage('cabletag'), texto: 'JOHN', tampa: true },
+  { slug: 'articulated', nome: 'Nome articulado', descricao: 'Letras unidas que se movimentam.', image: modelImage('articulated'), texto: 'ISABELLA', tampa: false },
+  { slug: 'nameplate', nome: 'Placa de mesa', descricao: 'Seu nome em destaque na mesa.', image: modelImage('nameplate'), texto: 'OLIVER', tampa: false },
 ];
 
 export const FONTS = [

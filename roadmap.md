@@ -1,4 +1,5 @@
 # Requested changes
+- [ ] Guard customizer asset metadata and verify tests, typecheck signals and Personalizar photos.
 - [x] Renew personalization, category icons, typography and home feature section.
 - [x] Generate personalized photo and STL, with WhatsApp sharing and download fallback (downloads verified; native WhatsApp receipt requires the customer's device).
 - [x] Customizable models gallery and live 3D studio (quote request).
