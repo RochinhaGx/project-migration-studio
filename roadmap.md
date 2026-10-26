@@ -1,4 +1,6 @@
 # Requested changes
+- [x] Prepare Hostinger photo package with the eight active image paths; all eight loaded from an independent static host, and 11 customizer tests passed. Mobile uses the existing desktop photo because the old mobile asset is unavailable.
+- [ ] Apply the photo package and verify the actual Hostinger site: waiting for the owner to upload/redeploy and provide the public URL.
 - [x] Guard customizer asset metadata; 12 regression tests passed, automatic build reports OK, and all four Personalizar photos loaded in the browser (manual full typecheck not run: platform manages checks).
 - [x] Renew personalization, category icons, typography and home feature section.
 - [x] Generate personalized photo and STL, with WhatsApp sharing and download fallback (downloads verified; native WhatsApp receipt requires the customer's device).
