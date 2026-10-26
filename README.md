@@ -1,5 +1,9 @@
 # 3DTECH Studio Catalog
 
+## Publicação na Hostinger
+
+Consulte [HOSTINGER.md](./HOSTINGER.md) para os campos exatos da publicação, imagens e variáveis de ambiente. Use `Nitro`, Node `22.x`, raiz `./`, comando `npm run build:hostinger`, saída `.output` e entrada `server/index.mjs`. As imagens ativas estão incluídas em `public`.
+
 https://github.com/Rochagx/d-catalog-hub (código em anexo no arquivo d-catalog-hub-main.zip)
 
 Adicione esse componente em pedir orçamento sabe quando vc pedir pra fazer o upload da logo e tal, te enviei o código react (em anexo: import React from 'react'; (pasted).txt)
