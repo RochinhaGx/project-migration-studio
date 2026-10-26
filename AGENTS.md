@@ -10,6 +10,7 @@
 <!-- LOVABLE:END -->
 
 ## Application architecture
+- Outside Lovable, deploy Nitro with the node-server preset and .output/server/index.mjs; keep active photo bytes under public at their existing pointer paths so Hostinger needs no Lovable asset proxy. The hostinger build script checks both source photos and emitted photos before accepting deployment.
 - Resolve optional customizer asset pointers through an eager glob and an unknown-value URL guard with the existing placeholder fallback, so absent files or empty metadata cannot break the gallery or inferred types.
 - Keep imported TanStack content routes and the shared StoreShell/StoreProvider at the root so navigation preserves transient bag state.
 - Store custom quotes through validated, rate-limited server functions in Cloud; uploaded customer files remain private.
