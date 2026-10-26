@@ -1,4 +1,5 @@
 # Requested changes
+- [ ] Configure Nitro Node deployment, include active photos in public, and document exact Hostinger fields and environment names.
 - [x] Prepare Hostinger photo package with the eight active image paths; all eight loaded from an independent static host, and 11 customizer tests passed. Mobile uses the existing desktop photo because the old mobile asset is unavailable.
 - [ ] Apply the photo package and verify the actual Hostinger site: waiting for the owner to upload/redeploy and provide the public URL.
 - [x] Guard customizer asset metadata; 12 regression tests passed, automatic build reports OK, and all four Personalizar photos loaded in the browser (manual full typecheck not run: platform manages checks).
