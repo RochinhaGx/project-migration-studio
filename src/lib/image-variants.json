@@ -1,0 +1,126 @@
+{
+  "/__l5e/assets-v1/9ce3eaf1-5af3-4f02-80ec-6a1331ea03e9/3dtech-logo.png": [
+    {
+      "width": 160,
+      "url": "/__l5e/assets-v1/3000f468-7b03-4a18-ab54-eda92682d0d9/3dtech-logo-new-160.webp"
+    },
+    {
+      "width": 320,
+      "url": "/__l5e/assets-v1/0a515258-851d-4ca5-956b-8fd3d20257f3/3dtech-logo-new-320.webp"
+    },
+    {
+      "width": 640,
+      "url": "/__l5e/assets-v1/69647672-d9cb-4ef3-8579-a69b7ce78d4a/3dtech-logo-new-640.webp"
+    }
+  ],
+  "/__l5e/assets-v1/760a2291-3b28-431d-973e-f3970ecfe2f7/hero-desktop.png": [
+    {
+      "width": 320,
+      "url": "/__l5e/assets-v1/a993ecf4-8ded-40f9-a3bd-dd010caf7f3c/hero-desktop-320.webp"
+    },
+    {
+      "width": 640,
+      "url": "/__l5e/assets-v1/3d48910d-964c-44b4-92f3-3e3351a76752/hero-desktop-640.webp"
+    },
+    {
+      "width": 1280,
+      "url": "/__l5e/assets-v1/b1e40206-6c33-4073-bbce-eaadab0d80c1/hero-desktop-1280.webp"
+    },
+    {
+      "width": 1920,
+      "url": "/__l5e/assets-v1/94d5d476-c789-45a2-ac82-e3261a2190e4/hero-desktop-1920.webp"
+    }
+  ],
+  "/__l5e/assets-v1/a8af11cd-69fd-4515-a92e-afb0171501ce/hero-mobile.png": [
+    {
+      "width": 320,
+      "url": "/__l5e/assets-v1/1c231cea-e886-4f3b-a28a-a9a3ad45cb85/hero-mobile-320.webp"
+    },
+    {
+      "width": 640,
+      "url": "/__l5e/assets-v1/263c3059-14bb-4055-9db6-c56ea2fdc4c1/hero-mobile-640.webp"
+    },
+    {
+      "width": 1280,
+      "url": "/__l5e/assets-v1/f623f1bb-4f0b-42c6-943b-e00f9c72d85b/hero-mobile-1280.webp"
+    },
+    {
+      "width": 1920,
+      "url": "/__l5e/assets-v1/d6baed35-f8e1-471b-a564-4ebe25893574/hero-mobile-1920.webp"
+    }
+  ],
+  "/__l5e/assets-v1/21900050-2c33-465f-ba45-623d1917aab1/sob-medida.png": [
+    {
+      "width": 320,
+      "url": "/__l5e/assets-v1/e7d1a894-d3f0-4a48-9569-25fc5b375e99/custom-order-background-320.webp"
+    },
+    {
+      "width": 640,
+      "url": "/__l5e/assets-v1/efab0c9e-aa55-4ab2-b390-8bb66ac92119/custom-order-background-640.webp"
+    },
+    {
+      "width": 1280,
+      "url": "/__l5e/assets-v1/139849bc-1184-4128-bae9-8bb3f78c2eec/custom-order-background-1280.webp"
+    },
+    {
+      "width": 1920,
+      "url": "/__l5e/assets-v1/deeb3207-1cfd-45e5-907c-f3e115e3405a/custom-order-background-1920.webp"
+    }
+  ],
+  "/__l5e/assets-v1/d8606c05-14af-42d2-8d64-e79e7be24e35/keychain.png": [
+    {
+      "width": 160,
+      "url": "/__l5e/assets-v1/0761476e-3ee8-4750-802f-3e046418fee6/custom-keychain-160.webp"
+    },
+    {
+      "width": 320,
+      "url": "/__l5e/assets-v1/88de31e0-1846-42a7-ae48-1bcfa7ee49b5/custom-keychain-320.webp"
+    },
+    {
+      "width": 640,
+      "url": "/__l5e/assets-v1/afbd012b-ae71-4dce-879e-ab062961bbf3/custom-keychain-640.webp"
+    }
+  ],
+  "/__l5e/assets-v1/fd216e4d-4242-47eb-b429-eea2fae78fa8/cabletag.png": [
+    {
+      "width": 160,
+      "url": "/__l5e/assets-v1/7a8cb7cc-c7dd-4cef-9525-1ee0edecbced/custom-cabletag-160.webp"
+    },
+    {
+      "width": 320,
+      "url": "/__l5e/assets-v1/c7228c71-b2be-410c-a6ed-978a5fede5ae/custom-cabletag-320.webp"
+    },
+    {
+      "width": 640,
+      "url": "/__l5e/assets-v1/b7eb0bd4-40e5-460d-89be-bde4f2202e37/custom-cabletag-640.webp"
+    }
+  ],
+  "/__l5e/assets-v1/31d2b05d-3e3e-432e-b500-98f4590c4d2e/articulated.png": [
+    {
+      "width": 160,
+      "url": "/__l5e/assets-v1/a719e9e7-bb95-4a0d-94cc-88875387f1c0/custom-articulated-160.webp"
+    },
+    {
+      "width": 320,
+      "url": "/__l5e/assets-v1/1f4c9443-bec1-45c2-926e-a725bfa09cf1/custom-articulated-320.webp"
+    },
+    {
+      "width": 640,
+      "url": "/__l5e/assets-v1/7ca08f97-d9bc-4d4c-a3bb-dc0fcc532938/custom-articulated-640.webp"
+    }
+  ],
+  "/__l5e/assets-v1/dc1b835e-f481-4450-a791-d991cebc8cdd/nameplate.png": [
+    {
+      "width": 160,
+      "url": "/__l5e/assets-v1/f481e5b8-a1e4-48b7-b588-b111770422cc/custom-nameplate-160.webp"
+    },
+    {
+      "width": 320,
+      "url": "/__l5e/assets-v1/31c291ce-34d3-4c81-8c4c-592a60edace8/custom-nameplate-320.webp"
+    },
+    {
+      "width": 640,
+      "url": "/__l5e/assets-v1/544e7293-5256-47ca-a32f-9c1bf4da121e/custom-nameplate-640.webp"
+    }
+  ]
+}
