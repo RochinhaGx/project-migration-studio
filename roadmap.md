@@ -1,4 +1,8 @@
 # Requested changes
+- [ ] Put product video in the photo carousel and move the 3D action below thumbnails.
+- [ ] Add Christmas family-name tree and more customizable models.
+- [ ] Optimize image delivery while preserving Hostinger compatibility.
+- [ ] Deliver an .env template without exporting private credentials.
 - [ ] Configure Nitro Node deployment, include active photos in public, and document exact Hostinger fields and environment names.
 - [x] Prepare Hostinger photo package with the eight active image paths; all eight loaded from an independent static host, and 11 customizer tests passed. Mobile uses the existing desktop photo because the old mobile asset is unavailable.
 - [ ] Apply the photo package and verify the actual Hostinger site: waiting for the owner to upload/redeploy and provide the public URL.
