@@ -10,10 +10,11 @@ describe('Customizer asset metadata', () => {
     expect(customizerAssetUrl({ url: ' /__l5e/assets-v1/example/keychain.png ' })).toBe('/__l5e/assets-v1/example/keychain.png');
   });
 
-  it('resolves all four current model photos from the optional pointer imports', () => {
-    expect(CUSTOM_MODELS).toHaveLength(4);
+  it('resolves current model photos including the Christmas tree', () => {
+    expect(CUSTOM_MODELS).toHaveLength(7);
     for (const model of CUSTOM_MODELS) {
-      expect(model.image).toMatch(/^\/__l5e\/assets-v1\/.+\.png$/);
+      expect(model.image).not.toBe('/produto-sem-foto.svg');
+      expect(typeof model.image).toBe('string');
     }
   });
 });

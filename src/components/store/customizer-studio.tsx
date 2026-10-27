@@ -2,6 +2,8 @@ import { Canvas } from '@react-three/fiber';
 import { Environment, Lightformer, OrbitControls, Text3D, ContactShadows } from '@react-three/drei';
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { Box3, Group, Vector3 } from 'three';
+import { ChristmasTree } from './christmas-tree';
+import { treeNames } from '@/lib/christmas-tree';
 import { Link } from '@tanstack/react-router';
 import { useServerFn } from '@tanstack/react-start';
 import { ArrowLeft, ArrowUpRight, Download, Image, Share2, RotateCcw, Box, Type, Ruler, MoveHorizontal } from 'lucide-react';
@@ -12,7 +14,7 @@ import { FILAMENTS, FONTS, type CustomModel, type ShapeKind } from '@/lib/custom
 import { submitCustomOrder } from '@/lib/catalog.functions';
 import { orderSchema, whatsapp } from '@/lib/store-schema';
 
-type Config = { texto: string; font: string; spacing: number; size: number; text: string; base: string; cap: string };
+type Config = { texto: string; font: string; spacing: number; size: number; text: string; base: string; cap: string; year: string };
 type Dims = { x: number; y: number; z: number };
 
 function Letters({ c, depth, color, z = 0 }: { c: Config; depth: number; color: string; z?: number }) {
@@ -54,12 +56,9 @@ function Piece({ kind, c, onDims, modelRef }: { kind: ShapeKind; c: Config; onDi
     case 'articulated': textDepth = 0.7; textZ = -0.35; base = null; break;
     case 'penholder':
       textDepth = 1.6; textZ = -0.8;
-      base = <mesh position={[box.cx, box.cy - box.h / 2 - 0.2, 0]}><boxGeometry args={[W, 0.4, 2.2]} />{mat(c.base)}</mesh>; break;
+      base = <group><mesh position={[box.cx, box.cy - box.h / 2 - 0.2, 0]}><boxGeometry args={[W, 0.4, 3.6]} />{mat(c.base)}</mesh>{[-1, 1].map(x => <group key={x} position={[box.cx + x * W / 4, box.cy + 0.3, -0.9]}><mesh><cylinderGeometry args={[0.65, 0.65, 2, 32, 1, true]}/><meshStandardMaterial color={c.base} side={2}/></mesh><mesh><cylinderGeometry args={[0.52, 0.52, 2, 32, 1, true]}/><meshStandardMaterial color={c.base} side={2}/></mesh><mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 1, 0]}><ringGeometry args={[0.52, 0.65, 32]}/><meshStandardMaterial color={c.base} side={2}/></mesh></group>)}</group>; break;
     case 'frame':
-      base = <group position={[box.cx, box.cy + c.size * 2.6, 0]}>
-        <mesh position={[0, 0, -0.1]}><boxGeometry args={[Math.max(W, 5), 6.5, 0.4]} />{mat(c.base)}</mesh>
-        <mesh position={[0, 0.5, 0.11]}><boxGeometry args={[Math.max(W, 5) - 1.2, 4.6, 0.02]} />{mat(c.cap)}</mesh>
-      </group>; textZ = 0.1; textDepth = 0.25; break;
+      base = <group position={[box.cx, box.cy + 3.3, 0]}>{[-1, 1].map(sign => <group key={sign}><mesh position={[sign * (Math.max(W, 5) / 2 - 0.3), 0, 0]}><boxGeometry args={[0.6, 6.5, 0.4]}/>{mat(c.base)}</mesh><mesh position={[0, sign * 2.95, 0]}><boxGeometry args={[Math.max(W, 5), 0.6, 0.4]}/>{mat(c.base)}</mesh></group>)}<mesh position={[0, -3.35, 0]}><boxGeometry args={[Math.max(W, 5) + 0.6, 0.3, 2]}/>{mat(c.base)}</mesh></group>; textZ = 0.1; textDepth = 0.25; break;
     case 'piggy':
       textDepth = 1.8; textZ = -0.9;
       base = <mesh position={[box.cx, box.cy + box.h / 2 + 0.05, 0]}><boxGeometry args={[box.w * 0.25, 0.12, 0.3]} />{mat(c.cap)}</mesh>; break;
@@ -76,7 +75,7 @@ function Piece({ kind, c, onDims, modelRef }: { kind: ShapeKind; c: Config; onDi
   }
   return <group ref={modelRef} rotation={[rotX, 0, 0]}><group position={offset}><group ref={whole}>
     {base}
-    <group ref={textRef}>{kind === 'articulated'
+    <group ref={textRef}> {kind === 'christmas-tree' ? <ChristmasTree text={c.texto} year={c.year} font={c.font} size={c.size} spacing={c.spacing} primary={c.base} secondary={c.text} star={c.cap}/> : {kind === 'articulated'
       ? <Letters c={c} depth={textDepth} color={c.text} z={textZ} />
       : <Letters c={c} depth={textDepth} color={c.text} z={textZ} />}</group>
   </group></group></group>;
@@ -91,7 +90,7 @@ function Swatches({ label, value, onChange }: { label: string; value: string; on
 const nameOf = (hex: string) => FILAMENTS.find(f => f.hex === hex)?.nome ?? hex;
 
 export default function CustomizerStudio({ model }: { model: CustomModel }) {
-  const [c, setC] = useState<Config>({ texto: model.texto, font: FONTS[0].url, spacing: 0.02, size: 1, text: '#F5F5F5', base: '#D7263D', cap: '#1A1A1A' });
+  const [c, setC] = useState<Config>({ texto: model.texto, font: FONTS[0].url, spacing: 0.02, size: 1, text: model.slug === 'christmas-tree' ? FILAMENTS[3].hex : FILAMENTS[1].hex, base: model.slug === 'christmas-tree' ? FILAMENTS[6].hex : FILAMENTS[3].hex, cap: model.slug === 'christmas-tree' ? FILAMENTS[5].hex : FILAMENTS[0].hex, year: '2026' });
   const [dims, setDims] = useState<Dims>({ x: 0, y: 0, z: 0 });
   const [busy, setBusy] = useState(false); const [error, setError] = useState(''); const [link, setLink] = useState('');
   const modelRef = useRef<Group>(null);
@@ -112,7 +111,7 @@ export default function CustomizerStudio({ model }: { model: CustomModel }) {
     e.preventDefault(); setError(''); setBusy(true);
     try {
       const f = new FormData(e.currentTarget);
-      const resumo = `Modelo personalizado: ${model.nome}\nTexto: ${c.texto}\nFonte: ${fontName}\nEspaçamento: ${c.spacing.toFixed(2)} · Tamanho: ${c.size.toFixed(1)}\nCores — texto: ${nameOf(c.text)}, base: ${nameOf(c.base)}${model.tampa ? `, detalhe: ${nameOf(c.cap)}` : ''}\nDimensões: ${cm(dims.x)} × ${cm(dims.y)} × ${cm(dims.z)} cm`;
+      const resumo = `Modelo personalizado: ${model.nome}\nTexto: ${c.texto}${model.slug === 'christmas-tree' ? `\nAno: ${c.year || 'Sem ano'}` : ''}\nFonte: ${fontName}\nEspaçamento: ${c.spacing.toFixed(2)} · Tamanho: ${c.size.toFixed(1)}\nCores — texto: ${nameOf(c.text)}, base: ${nameOf(c.base)}${model.tampa ? `, detalhe: ${nameOf(c.cap)}` : ''}\nDimensões: ${cm(dims.x)} × ${cm(dims.y)} × ${cm(dims.z)} cm`;
       const data = orderSchema.parse({ nome: f.get('nome'), contato: f.get('contato'), descricao: resumo, cor: nameOf(c.text).slice(0, 30), arquivo: null, logo_arquivo: null, dimensoes: { unidade: 'cm', largura: cm(dims.x), altura: cm(dims.y), profundidade: cm(dims.z) } });
       if (!modelRef.current || !canvasRef.current || dims.x === 0) throw new Error('Aguarde a peça carregar.');
       const filename = `${model.slug}-${c.texto.replace(/[^a-zA-Z0-9]/g, '-').slice(0, 30)}`;
@@ -126,7 +125,7 @@ export default function CustomizerStudio({ model }: { model: CustomModel }) {
       const message = `Olá! Sou ${data.nome}. Gostaria de um orçamento para esta peça.\n${resumo}\nContato: ${data.contato}\nAnexos: prévia PNG e modelo STL para avaliação de produção.`;
       setFiles([image, stl]); setPhoto(URL.createObjectURL(image)); setShareText(message);
       setReview({
-        texto: c.texto, fonte: fontName,
+        texto: model.slug === 'christmas-tree' ? `${treeNames(c.texto).join(' · ')}${c.year ? ` · ${c.year}` : ''}` : c.texto, fonte: fontName,
         espacamento: c.spacing.toFixed(2), tamanho: c.size.toFixed(1),
         cores: `texto: ${nameOf(c.text)}, base: ${nameOf(c.base)}${model.tampa ? `, detalhe: ${nameOf(c.cap)}` : ''}`,
         dimensoes: `${cm(dims.x)} × ${cm(dims.y)} × ${cm(dims.z)} cm`,
@@ -152,14 +151,14 @@ export default function CustomizerStudio({ model }: { model: CustomModel }) {
     <aside className="studio-panel">
       <Link to="/personalizar" className="studio-back"><ArrowLeft size={14} /> Modelos</Link>
       <span className="eyebrow"><Box size={14}/> SUA PEÇA / 3D</span><h1>{model.nome}</h1>
-      <label className="studio-field"><span><Type size={15}/> Nome / texto</span><input value={c.texto} maxLength={16} onChange={e => set('texto', e.target.value)} aria-label="Texto da peça" /></label>
+      {model.slug === 'christmas-tree' ? <><label className="studio-field"><span><Type size={15}/> Nomes da família</span><textarea value={c.texto.replace(/\*/g, '\n')} rows={4} maxLength={160} onChange={e => set('texto', e.target.value)} aria-label="Nomes da família" /></label><label className="studio-field"><span>Ano</span><input value={c.year} inputMode="numeric" maxLength={4} onChange={e => set('year', e.target.value.replace(/\D/g, ''))} aria-label="Ano da árvore" /></label></> : <label className="studio-field"><span><Type size={15}/> Nome / texto</span><input value={c.texto} maxLength={16} onChange={e => set('texto', e.target.value)} aria-label="Texto da peça" /></label>}
       <div className="studio-field"><span>Fonte</span><div className="studio-fonts">{FONTS.map(f => <Button variant="outline" key={f.id} type="button" aria-pressed={c.font === f.url} onClick={() => set('font', f.url)}>{f.nome}</Button>)}</div></div>
       <label className="studio-field"><span>Espaçamento entre letras <b>{c.spacing.toFixed(2)}</b></span><input type="range" min={-0.1} max={0.5} step={0.01} value={c.spacing} onChange={e => set('spacing', Number(e.target.value))} /></label>
       <label className="studio-field"><span>Tamanho <b>{c.size.toFixed(1)}</b></span><input type="range" min={0.5} max={2} step={0.1} value={c.size} onChange={e => set('size', Number(e.target.value))} /></label>
     </aside>
     <div className="studio-stage">
-      <div className="stage-label"><span><Box size={14}/> {c.texto || model.nome}</span><Button variant="outline" size="icon" title="Restaurar personalização" aria-label="Restaurar personalização" onClick={() => setC({ texto: model.texto, font: FONTS[0].url, spacing: 0.02, size: 1, text: '#F5F5F5', base: '#D7263D', cap: '#1A1A1A' })}><RotateCcw/></Button></div>
-      <Canvas shadows gl={{ preserveDrawingBuffer: true }} onCreated={({ gl }) => { canvasRef.current = gl.domElement; }} camera={{ position: [0, 3, 14], fov: 40 }} dpr={[1, 1.5]}>
+      <div className="stage-label"><span><Box size={14}/> {c.texto || model.nome}</span><Button variant="outline" size="icon" title="Restaurar personalização" aria-label="Restaurar personalização" onClick={() => setC({ texto: model.texto, font: FONTS[0].url, spacing: 0.02, size: 1, text: model.slug === 'christmas-tree' ? FILAMENTS[3].hex : FILAMENTS[1].hex, base: model.slug === 'christmas-tree' ? FILAMENTS[6].hex : FILAMENTS[3].hex, cap: model.slug === 'christmas-tree' ? FILAMENTS[5].hex : FILAMENTS[0].hex, year: '2026' })}><RotateCcw/></Button></div>
+      <Canvas shadows frameloop="demand" gl={{ preserveDrawingBuffer: true }} onCreated={({ gl }) => { canvasRef.current = gl.domElement; }} camera={{ position: [0, 3, 14], fov: 40 }} dpr={[1, 1.5]}>
         <color attach="background" args={['#f4f4f2']} />
         <ambientLight intensity={0.6} />
         <directionalLight position={[5, 8, 6]} intensity={2} castShadow />
@@ -173,9 +172,9 @@ export default function CustomizerStudio({ model }: { model: CustomModel }) {
     <aside className="studio-panel">
       <div className="studio-field"><span><Ruler size={15}/> Dimensões (cm)</span>
         <p className="studio-dims" aria-live="polite">L {fmt(dims.x)} · A {fmt(dims.y)} · P {fmt(dims.z)}</p></div>
-      <Swatches label="Cor do texto" value={c.text} onChange={v => set('text', v)} />
-      {model.slug !== 'articulated' && <Swatches label="Cor da base" value={c.base} onChange={v => set('base', v)} />}
-      {model.tampa && <Swatches label="Cor do detalhe" value={c.cap} onChange={v => set('cap', v)} />}
+      <Swatches label={model.slug === 'christmas-tree' ? "Cor dos nomes alternados" : "Cor do texto"} value={c.text} onChange={v => set('text', v)} />
+      {model.slug !== 'articulated' && <Swatches label={model.slug === 'christmas-tree' ? "Cor principal dos nomes" : "Cor da base"} value={c.base} onChange={v => set('base', v)} />}
+      {model.tampa && <Swatches label={model.slug === 'christmas-tree' ? "Cor da estrela" : "Cor do detalhe"} value={c.cap} onChange={v => set('cap', v)} />}
       <form className="studio-order" onSubmit={order}>
         <input name="nome" required minLength={2} maxLength={100} placeholder="Seu nome" autoComplete="name" aria-label="Seu nome" />
         <input name="contato" required minLength={8} maxLength={100} placeholder="WhatsApp ou e-mail" aria-label="WhatsApp ou e-mail" />

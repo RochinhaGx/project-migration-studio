@@ -1,3 +1,5 @@
+import penholderImage from '@/assets/custom-penholder-new.jpg';
+import frameImage from '@/assets/custom-frame-new.jpg';
 // Optional pointers may be absent or contain {} while an asset is replaced.
 // Glob imports let absent files fall back without breaking module resolution.
 const modelAssets = import.meta.glob<unknown>('../assets/custom-*.jpg.asset.json', {
@@ -17,10 +19,13 @@ export function customizerAssetUrl(metadata: unknown): string {
 
 const modelImage = (name: string) => customizerAssetUrl(modelAssets[`../assets/custom-${name}.jpg.asset.json`]);
 
-export type ShapeKind = 'keychain' | 'cabletag' | 'articulated' | 'penholder' | 'frame' | 'piggy' | 'nameplate' | 'planter';
+export type ShapeKind = 'keychain' | 'cabletag' | 'articulated' | 'penholder' | 'frame' | 'piggy' | 'nameplate' | 'planter' | 'christmas-tree';
 export type CustomModel = { slug: ShapeKind; nome: string; descricao: string; image: string; texto: string; tampa: boolean };
 
 export const CUSTOM_MODELS: CustomModel[] = [
+  { slug: 'christmas-tree', nome: 'Árvore de Natal da família', descricao: 'Nomes, ano e cores em uma árvore só sua.', image: modelImage('christmas-tree'), texto: 'ANA*DAVID*MAMA*PAPA', tampa: true },
+  { slug: 'penholder', nome: 'Porta-canetas com nome', descricao: 'Seu nome com espaço para lápis e canetas.', image: penholderImage, texto: 'LUNA', tampa: false },
+  { slug: 'frame', nome: 'Porta-retrato com nome', descricao: 'Uma moldura personalizada para sua foto.', image: frameImage, texto: 'LUNA', tampa: true },
   { slug: 'keychain', nome: 'Chaveiro com nome', descricao: 'Nome em relevo sobre base com argola.', image: modelImage('keychain'), texto: 'Luna', tampa: false },
   { slug: 'cabletag', nome: 'Etiqueta de cabo', descricao: 'Identifique seus cabos com estilo.', image: modelImage('cabletag'), texto: 'JOHN', tampa: true },
   { slug: 'articulated', nome: 'Nome articulado', descricao: 'Letras unidas que se movimentam.', image: modelImage('articulated'), texto: 'ISABELLA', tampa: false },
