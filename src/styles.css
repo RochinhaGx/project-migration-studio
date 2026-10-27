@@ -583,3 +583,16 @@ html,body{overflow-x:hidden;}
 .pix-notice-error .pix-notice-icon{background:color-mix(in oklab,var(--destructive) 14%,var(--background));color:var(--destructive)}
 .pix-notice-warning{border-color:color-mix(in oklab,var(--primary) 35%,transparent);background:color-mix(in oklab,var(--primary) 7%,var(--background))}
 .pix-notice-warning .pix-notice-icon{background:color-mix(in oklab,var(--primary) 16%,var(--background));color:var(--primary)}
+
+/* Unified product media and family tree controls */
+.product-gallery-stage { position:relative; aspect-ratio:1; background:var(--studio-surface); border-radius:8px; overflow:hidden; }
+.product-gallery-stage .detail-main-image { width:100%; height:100%; aspect-ratio:1; border-radius:8px; }
+.product-gallery-stage .model-viewer,.product-gallery-stage .model-loading { height:100%; }
+.product-gallery-stage .model-viewer-expanded { height:100dvh; }
+.product-gallery-video { object-fit:contain; background:var(--studio-ink); }
+.gallery-arrows { position:absolute; inset:50% 12px auto; display:flex; justify-content:space-between; pointer-events:none; }
+.gallery-arrows button { pointer-events:auto; }
+.thumbnails button[aria-pressed=true] { border:2px solid var(--primary); }
+.video-thumbnail { color:var(--foreground); background:var(--muted); }
+.studio-field textarea { width:100%; resize:vertical; border:1px solid var(--border); border-radius:6px; padding:10px 12px; background:var(--background); font-size:14px; }
+.studio-field input,.studio-field textarea { min-width:0; }
