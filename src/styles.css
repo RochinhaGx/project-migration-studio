@@ -475,6 +475,7 @@ body:has(.order-success),body:has(.order-success) .store-header { background:var
   --filament-3: oklch(0.58 0.2 22); --filament-4: oklch(0.7 0.19 48); --filament-5: oklch(0.84 0.16 90);
   --filament-6: oklch(0.63 0.15 145); --filament-7: oklch(0.72 0.11 238); --filament-8: oklch(0.5 0.21 264);
   --filament-9: oklch(0.48 0.18 305); --filament-10: oklch(0.7 0.15 350); --filament-11: oklch(0.84 0.05 85);
+  --filament-12: oklch(0.72 0.13 85); --filament-13: oklch(0.79 0.008 250);
 }
 .hero { height:570px; }
 .hero-image { object-position:center; }
@@ -514,7 +515,7 @@ body:has(.order-success),body:has(.order-success) .store-header { background:var
 .studio-swatches { gap:11px; padding:3px; }
 .studio-swatches button { width:27px; height:27px; padding:0; }
 .studio-swatches button[aria-checked=true] { outline-color:var(--studio-ink); }
-.filament-0 { background:var(--filament-0); }.filament-1 { background:var(--filament-1); }.filament-2 { background:var(--filament-2); }.filament-3 { background:var(--filament-3); }.filament-4 { background:var(--filament-4); }.filament-5 { background:var(--filament-5); }.filament-6 { background:var(--filament-6); }.filament-7 { background:var(--filament-7); }.filament-8 { background:var(--filament-8); }.filament-9 { background:var(--filament-9); }.filament-10 { background:var(--filament-10); }.filament-11 { background:var(--filament-11); }
+.filament-0 { background:var(--filament-0); }.filament-1 { background:var(--filament-1); }.filament-2 { background:var(--filament-2); }.filament-3 { background:var(--filament-3); }.filament-4 { background:var(--filament-4); }.filament-5 { background:var(--filament-5); }.filament-6 { background:var(--filament-6); }.filament-7 { background:var(--filament-7); }.filament-8 { background:var(--filament-8); }.filament-9 { background:var(--filament-9); }.filament-10 { background:var(--filament-10); }.filament-11 { background:var(--filament-11); }.filament-12 { background:var(--filament-12); }.filament-13 { background:var(--filament-13); }
 .stage-label { position:absolute; inset:18px 20px auto; display:flex; justify-content:space-between; align-items:center; z-index:2; pointer-events:none; }
 .stage-label>span { display:flex; align-items:center; gap:8px; font-size:12px; }
 .stage-label button { pointer-events:auto; }
