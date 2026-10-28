@@ -27,21 +27,21 @@ export function CategoryManager({ onClose, usage }: { onClose: () => void; usage
   async function add(e: React.FormEvent) {
     e.preventDefault();
     const n = nome.trim();
-    if (!n) return;
+    if (!n) { return; }
     const { error } = await supabase.from('categorias').insert({ nome: n.slice(0, 80), ordem: (cats.data?.length ?? 0) + 1 });
-    if (error) return toast.error(error.code === '23505' ? 'Essa categoria já existe.' : 'Não foi possível adicionar.');
+    if (error) { toast.error(error.code === '23505' ? 'Essa categoria já existe.' : 'Não foi possível adicionar.'); return; }
     setNome(''); toast.success('Categoria adicionada'); await refresh();
   }
   async function toggle(c: Category) {
     const { error } = await supabase.from('categorias').update({ oculto: !c.oculto }).eq('id', c.id);
-    if (error) return toast.error('Não foi possível alterar.');
+    if (error) { toast.error('Não foi possível alterar.'); return; }
     await refresh();
   }
   async function remove(c: Category) {
     const used = usage[c.nome] ?? 0;
     if (!window.confirm(used ? `${c.nome} tem ${used} produto(s). Remover mesmo assim? Os produtos continuam com esse nome de categoria.` : `Remover ${c.nome}?`)) return;
     const { error } = await supabase.from('categorias').delete().eq('id', c.id);
-    if (error) return toast.error('Não foi possível remover.');
+    if (error) { toast.error('Não foi possível remover.'); return; }
     toast.success('Categoria removida'); await refresh();
   }
 
