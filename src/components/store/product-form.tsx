@@ -10,7 +10,9 @@ import type { Product } from '@/lib/catalog.functions';
 
 type Media = { path?: string; file?: File; preview: string };
 const MAX = 20 * 1024 * 1024;
-const CATEGORIES = ['Decoração', 'Gaming', 'Geek', 'Utilidades', 'Religioso', 'Iluminação', 'Natal'];
+const MAX_BIG = 500 * 1024 * 1024;
+const PRESET_COLORS = [{ nome: 'Branco', hex: '#F5F5F5' }, { nome: 'Preto', hex: '#1A1A1A' }, { nome: 'Cinza', hex: '#8A8F98' }, { nome: 'Dourado', hex: '#C9A227' }, { nome: 'Inox', hex: '#B8BCC2' }];
+
 
 async function signed(path: string) {
   if (path.startsWith('/') || path.startsWith('https://')) return path;
@@ -25,7 +27,7 @@ async function upload(file: File, contentType?: string) {
   return path;
 }
 
-export function ProductForm({ product, onSave, onClose }: { product: Product | null; onSave: (row: ProductInput) => Promise<void>; onClose: () => void }) {
+export function ProductForm({ product, onSave, onClose, categories = [] }: { categories?: string[]; product: Product | null; onSave: (row: ProductInput) => Promise<void>; onClose: () => void }) {
   const [nome, setNome] = useState(product?.nome ?? '');
   const [descricao, setDescricao] = useState(product?.descricao ?? '');
   const [categoria, setCategoria] = useState(product?.categoria ?? 'Decoração');
@@ -126,7 +128,7 @@ export function ProductForm({ product, onSave, onClose }: { product: Product | n
             <div className="pf-desc-head"><span>Descrição</span><Button type="button" variant="outline" size="sm" disabled={aiBusy} onClick={writeWithAi}><Sparkles />{aiBusy ? 'Gerando…' : 'Gerar descrição com IA'}</Button></div>
             <label className="sr-only-label"><span className="sr-only">Descrição</span><textarea value={descricao} onChange={(e) => setDescricao(e.target.value)} maxLength={5000} rows={4} placeholder="Conte para o cliente o que torna essa peça especial." /></label>
             <div className="form-row">
-              <label>Categoria<input value={categoria} onChange={(e) => setCategoria(e.target.value)} required maxLength={80} list="pf-categories" /><datalist id="pf-categories">{CATEGORIES.map((c) => <option key={c}>{c}</option>)}</datalist></label>
+              <label>Categoria<input value={categoria} onChange={(e) => setCategoria(e.target.value)} required maxLength={80} list="pf-categories" /><datalist id="pf-categories">{categories.map((c) => <option key={c}>{c}</option>)}</datalist></label>
               <label>Preço<div className="pf-price"><span>R$</span><input inputMode="decimal" value={preco} onChange={(e) => setPreco(e.target.value)} required placeholder="0,00" /></div></label>
             </div>
           </section>
@@ -143,6 +145,7 @@ export function ProductForm({ product, onSave, onClose }: { product: Product | n
           <section className="pf-section">
             <h3>Cores disponíveis</h3>
             <p className="pf-hint">O cliente só poderá escolher entre as cores cadastradas aqui.</p>
+            <div className="flex flex-wrap gap-2 mb-2" aria-label="Cores rápidas">{PRESET_COLORS.map((p) => { const on = cores.some((c) => c.nome.toLowerCase() === p.nome.toLowerCase()); return <Button key={p.nome} type="button" variant={on ? 'default' : 'outline'} size="sm" aria-pressed={on} onClick={() => setCores((l) => on ? (l.length > 1 ? l.filter((c) => c.nome.toLowerCase() !== p.nome.toLowerCase()) : l) : [...l.filter((c) => c.nome.trim()), p].slice(0, 20))}><span aria-hidden className="inline-block size-3 rounded-full border border-border" style={{ background: p.hex }} />{p.nome}</Button>; })}</div>
             <div className="pf-specs">
               {cores.map((c, i) => (
                 <div className="pf-color" key={i}>
@@ -173,12 +176,12 @@ export function ProductForm({ product, onSave, onClose }: { product: Product | n
             <div>
               <h3>Vídeo</h3>
               {video ? <div className="pf-file"><video src={video.preview} controls muted /><Button type="button" variant="ghost" size="sm" onClick={() => setVideo(null)}><Trash2 />Remover vídeo</Button></div>
-                : <label className="pf-drop"><Film /><span>Enviar vídeo (até 20 MB)</span><input hidden type="file" accept="video/*" onChange={(e) => { const f = e.target.files?.[0]; if (!f) return; if (f.size > MAX) return setError('O vídeo passa de 20 MB.'); setVideo({ file: f, preview: URL.createObjectURL(f) }); }} /></label>}
+                : <label className="pf-drop"><Film /><span>Enviar vídeo (até 500 MB)</span><input hidden type="file" accept="video/*" onChange={(e) => { const f = e.target.files?.[0]; if (!f) return; if (f.size > MAX_BIG) return setError('O vídeo passa de 500 MB.'); setVideo({ file: f, preview: URL.createObjectURL(f) }); }} /></label>}
             </div>
             <div>
               <h3>Modelo 3D</h3>
               {model ? <div className="pf-file pf-model"><Box /><span>{model.file?.name ?? 'Modelo cadastrado'}</span><Button type="button" variant="ghost" size="sm" onClick={() => setModel(null)}><Trash2 />Remover</Button></div>
-                : <label className="pf-drop"><Box /><span>Enviar STL, OBJ ou GLB</span><input hidden type="file" accept=".stl,.obj,.glb" onChange={(e) => { const f = e.target.files?.[0]; if (!f) return; if (f.size > MAX || !/\.(stl|obj|glb)$/i.test(f.name)) return setError('Envie um modelo STL, OBJ ou GLB de até 20 MB.'); setModel({ file: f }); }} /></label>}
+                : <label className="pf-drop"><Box /><span>Enviar STL, OBJ ou GLB (até 500 MB)</span><input hidden type="file" accept=".stl,.obj,.glb" onChange={(e) => { const f = e.target.files?.[0]; if (!f) return; if (f.size > MAX_BIG || !/\.(stl|obj|glb)$/i.test(f.name)) return setError('Envie um modelo STL, OBJ ou GLB de até 500 MB.'); setModel({ file: f }); }} /></label>}
             </div>
           </section>
 
