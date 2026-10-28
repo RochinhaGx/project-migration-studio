@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { StoreImage } from './store-image';
 const ModelViewer = lazy(() => import('./model-viewer'));
 
-export function ProductGallery({ images, video, model, name, color, hex }: { images: string[]; video?: string | null; model?: string | null; name: string; color: string; hex?: string }) {
+export function ProductGallery({ images, video, model, name, color, hex }: { images: string[]; video?: string | null; model?: string | null; name: string; color: string; hex?: string | undefined }) {
   const photos = images.length ? images : ['/produto-sem-foto.svg'];
   const count = photos.length + (video ? 1 : 0);
   const [selected, setSelected] = useState(0);
