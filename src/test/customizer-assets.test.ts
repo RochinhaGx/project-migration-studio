@@ -11,7 +11,7 @@ describe('Customizer asset metadata', () => {
   });
 
   it('resolves current model photos including the Christmas tree', () => {
-    expect(CUSTOM_MODELS).toHaveLength(7);
+    expect(CUSTOM_MODELS).toHaveLength(10);
     for (const model of CUSTOM_MODELS) {
       expect(model.image).not.toBe('/produto-sem-foto.svg');
       expect(typeof model.image).toBe('string');
