@@ -19,7 +19,7 @@ export function customizerAssetUrl(metadata: unknown): string {
 
 const modelImage = (name: string) => customizerAssetUrl(modelAssets[`../assets/custom-${name}.jpg.asset.json`]);
 
-export type ShapeKind = 'keychain' | 'cabletag' | 'articulated' | 'penholder' | 'frame' | 'piggy' | 'nameplate' | 'planter' | 'christmas-tree';
+export type ShapeKind = 'keychain' | 'cabletag' | 'articulated' | 'penholder' | 'frame' | 'piggy' | 'nameplate' | 'planter' | 'christmas-tree' | 'doorsign' | 'bookmark' | 'pettag';
 export type CustomModel = { slug: ShapeKind; nome: string; descricao: string; image: string; texto: string; tampa: boolean };
 
 export const CUSTOM_MODELS: CustomModel[] = [
@@ -30,6 +30,9 @@ export const CUSTOM_MODELS: CustomModel[] = [
   { slug: 'cabletag', nome: 'Etiqueta de cabo', descricao: 'Identifique seus cabos com estilo.', image: modelImage('cabletag'), texto: 'JOHN', tampa: true },
   { slug: 'articulated', nome: 'Nome articulado', descricao: 'Letras unidas que se movimentam.', image: modelImage('articulated'), texto: 'ISABELLA', tampa: false },
   { slug: 'nameplate', nome: 'Placa de mesa', descricao: 'Seu nome em destaque na mesa.', image: modelImage('nameplate'), texto: 'OLIVER', tampa: false },
+  { slug: 'doorsign', nome: 'Placa de porta', descricao: 'Placa com moldura colorida e furos para fixar.', image: modelImage('doorsign'), texto: 'QUARTO DA LUNA', tampa: true },
+  { slug: 'bookmark', nome: 'Marcador de página', descricao: 'Marcador fino com nome e argola para fita.', image: modelImage('bookmark'), texto: 'Leitura', tampa: true },
+  { slug: 'pettag', nome: 'Plaquinha de pet', descricao: 'Medalha redonda com o nome do seu pet.', image: modelImage('pettag'), texto: 'THOR', tampa: true },
 ];
 
 export const FONTS = [
@@ -44,6 +47,7 @@ export const FILAMENTS = [
   { nome: 'Vermelho', hex: '#D7263D' }, { nome: 'Laranja', hex: '#F2711C' }, { nome: 'Amarelo', hex: '#F4C430' },
   { nome: 'Verde', hex: '#3FA34D' }, { nome: 'Azul claro', hex: '#5DADE2' }, { nome: 'Azul', hex: '#2453D6' },
   { nome: 'Roxo', hex: '#7B3FBF' }, { nome: 'Rosa', hex: '#E86FA8' }, { nome: 'Bege', hex: '#D9C7A3' },
+  { nome: 'Dourado', hex: '#C9A227' }, { nome: 'Prata', hex: '#B8BCC2' },
 ] as const;
 
 export const getCustomModel = (slug: string) => CUSTOM_MODELS.find(m => m.slug === slug);

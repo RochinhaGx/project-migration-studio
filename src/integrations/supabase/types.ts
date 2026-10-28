@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      categorias: {
+        Row: {
+          created_at: string
+          id: string
+          nome: string
+          oculto: boolean
+          ordem: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          nome: string
+          oculto?: boolean
+          ordem?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          nome?: string
+          oculto?: boolean
+          ordem?: number
+        }
+        Relationships: []
+      }
       pedidos: {
         Row: {
           codigo: string
