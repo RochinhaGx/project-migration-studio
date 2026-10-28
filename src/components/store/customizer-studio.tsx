@@ -75,8 +75,8 @@ function Piece({ kind, c, onDims, modelRef }: { kind: ShapeKind; c: Config; onDi
   }
   return <group ref={modelRef} rotation={[rotX, 0, 0]}><group position={offset}><group ref={whole}>
     {base}
-    <group ref={textRef}> {kind === 'christmas-tree' ? <ChristmasTree text={c.texto} year={c.year} font={c.font} size={c.size} spacing={c.spacing} primary={c.base} secondary={c.text} star={c.cap}/> : {kind === 'articulated'
-      ? <Letters c={c} depth={textDepth} color={c.text} z={textZ} />
+    <group ref={textRef}>{kind === 'christmas-tree'
+      ? <ChristmasTree text={c.texto} year={c.year} font={c.font} size={c.size} spacing={c.spacing} primary={c.base} secondary={c.text} star={c.cap}/>
       : <Letters c={c} depth={textDepth} color={c.text} z={textZ} />}</group>
   </group></group></group>;
 }
