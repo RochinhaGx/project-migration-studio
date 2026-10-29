@@ -34,7 +34,7 @@ export default function ModelViewer({ url, color, hex, onClose }: { url: string;
         const response = await fetch(url, { signal: controller.signal });
         if (!response.ok) throw new Error('Arquivo indisponível.');
         const buffer = await response.arrayBuffer();
-        if (buffer.byteLength > 20 * 1024 * 1024) throw new Error('Modelo acima de 20 MB.');
+        if (buffer.byteLength > 500 * 1024 * 1024) throw new Error('Modelo acima de 500 MB.');
         const ext = new URL(url, window.location.origin).pathname.split('.').pop()?.toLowerCase();
         model = new Group();
         if (ext === 'stl') {
