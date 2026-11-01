@@ -1,4 +1,6 @@
 # Requested changes
+- [ ] Complete Hostinger Google/payment callback code and safe deployment validation.
+- [ ] Transfer data and register production webhooks: blocked by access to the owner's external account and Hostinger settings.
 - [ ] Put product video in the photo carousel and move the 3D action below thumbnails.
 - [ ] Add Christmas family-name tree and more customizable models.
 - [ ] Optimize image delivery while preserving Hostinger compatibility.

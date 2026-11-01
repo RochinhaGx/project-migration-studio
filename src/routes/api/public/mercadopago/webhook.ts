@@ -1,21 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { z } from 'zod';
-
-async function validSignature(header: string, requestId: string, dataId: string, secret: string) {
-  const parts = Object.fromEntries(header.split(',').map((p) => { const [k, ...v] = p.trim().split('='); return [k, v.join('=')]; }));
-  const ts = parts['ts']; const v1 = parts['v1'];
-  if (!ts || !v1) return false;
-  const manifest = `id:${dataId.toLowerCase()};request-id:${requestId};ts:${ts};`;
-  const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
-  const mac = new Uint8Array(await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(manifest)));
-  const expected = Array.from(mac).map((b) => b.toString(16).padStart(2, '0')).join('');
-  if (expected.length !== v1.length) return false;
-  let diff = 0;
-  for (let i = 0; i < expected.length; i++) diff |= expected.charCodeAt(i) ^ v1.charCodeAt(i);
-  return diff === 0;
-}
-
-const bodySchema = z.object({ type: z.string().optional(), action: z.string().optional(), data: z.object({ id: z.union([z.string(), z.number()]) }).optional() }).passthrough();
+import { verifyMercadoPagoSignature } from '@/lib/webhook-signatures';
+const bodySchema = z.object({ type: z.string().max(80).optional(), action: z.string().max(120).optional(), data: z.object({ id: z.union([z.string().regex(/^\d{1,20}$/), z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER)]) }).optional() }).passthrough();
 
 export const Route = createFileRoute('/api/public/mercadopago/webhook')({
   server: {
@@ -23,18 +9,23 @@ export const Route = createFileRoute('/api/public/mercadopago/webhook')({
       POST: async ({ request }) => {
         const url = new URL(request.url);
         const raw = await request.text();
-        const parsed = bodySchema.safeParse(raw ? JSON.parse(raw) : {});
-        const body = parsed.success ? parsed.data : {};
+        if (raw.length > 1024 * 1024) return new Response('Too large', { status: 413 });
+        let payload: unknown;
+        try { payload = raw ? JSON.parse(raw) : {}; } catch { return new Response('Invalid JSON', { status: 400 }); }
+        const parsed = bodySchema.safeParse(payload);
+        if (!parsed.success) return new Response('Invalid event', { status: 400 });
+        const body = parsed.data;
         const type = body.type ?? url.searchParams.get('type') ?? url.searchParams.get('topic');
-        const id = String(body.data?.id ?? url.searchParams.get('data.id') ?? url.searchParams.get('id') ?? '');
+        const queryId = url.searchParams.get('data.id') ?? url.searchParams.get('id');
+        const id = String(queryId ?? body.data?.id ?? '');
+        if (queryId && body.data?.id !== undefined && queryId !== String(body.data.id)) return new Response('Mismatched payment', { status: 400 });
         if (type !== 'payment' || !/^\d{1,20}$/.test(id)) return new Response('ignored', { status: 200 });
 
-        // Optional: when a webhook secret is configured, enforce Mercado Pago's signature.
+        // Never allow unsigned notifications to trigger privileged writes.
         const secret = process.env['MERCADOPAGO_WEBHOOK_SECRET'];
-        if (secret) {
-          const sig = request.headers.get('x-signature'); const rid = request.headers.get('x-request-id') ?? '';
-          if (!sig || !(await validSignature(sig, rid, id, secret))) return new Response('Invalid signature', { status: 401 });
-        }
+        if (!secret) return new Response('Webhook not configured', { status: 503 });
+        const sig = request.headers.get('x-signature'); const rid = request.headers.get('x-request-id') ?? '';
+        if (!sig || !(await verifyMercadoPagoSignature(sig, rid, id, secret))) return new Response('Invalid signature', { status: 401 });
 
         // The payload's status is never trusted: the payment is re-read from Mercado Pago with our token.
         const { syncMpPayment } = await import('@/lib/mercadopago.server');
