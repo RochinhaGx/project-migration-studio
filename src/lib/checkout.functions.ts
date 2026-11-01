@@ -3,17 +3,9 @@ import { getRequest } from '@tanstack/react-start/server';
 import { z } from 'zod';
 import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
 import { ORDER_STATUS } from './store-schema';
+import { paymentOrigin } from './payment-origin';
 
 const itemSchema = z.object({ id: z.string().uuid(), quantity: z.number().int().min(1).max(99), color: z.string().max(40), material: z.enum(['PLA', 'PETG']) });
-
-async function stripe(path: string, body?: URLSearchParams) {
-  const key = process.env['STRIPE_RESTRICTED_API_KEY'];
-  if (!key) throw new Error('Pagamento indisponível no momento.');
-  const res = await fetch(`https://api.stripe.com/v1/${path}`, { method: body ? 'POST' : 'GET', headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/x-www-form-urlencoded' }, body: body ?? null });
-  const json = (await res.json()) as Record<string, unknown> & { error?: { message?: string } };
-  if (!res.ok) { console.error('Stripe', json.error?.message); throw new Error('Não foi possível iniciar o pagamento.'); }
-  return json;
-}
 
 export const createCheckout = createServerFn({ method: 'POST' })
   .inputValidator((d) => z.object({ items: z.array(itemSchema).min(1).max(50) }).parse(d))
@@ -36,7 +28,7 @@ export const createCheckout = createServerFn({ method: 'POST' })
     if (total < 1) throw new Error('Valor mínimo para pagamento online é R$ 1,00.');
     const { data: order, error: oe } = await supabaseAdmin.from('pedidos').insert({ owner_id: owner, itens, total, email: email ?? null }).select('id').single();
     if (oe || !order) throw new Error('Não foi possível registrar o pedido.');
-    const origin = new URL(req.url).origin;
+    const origin = paymentOrigin(req.url, process.env['APP_URL']);
     const b = new URLSearchParams();
     b.set('mode', 'payment');
     b.set('success_url', `${origin}/pedido-confirmado?session_id={CHECKOUT_SESSION_ID}`);
@@ -51,21 +43,19 @@ export const createCheckout = createServerFn({ method: 'POST' })
       b.set(`line_items[${n}][price_data][unit_amount]`, String(Math.round(i.preco * 100)));
       b.set(`line_items[${n}][price_data][product_data][name]`, `${i.nome} · ${i.cor} · ${i.material}`.slice(0, 250));
     });
-    const session = await stripe('checkout/sessions', b);
-    await supabaseAdmin.from('pedidos').update({ stripe_session_id: String(session['id']) }).eq('id', order.id);
-    return { url: String(session['url']) };
+    const { stripeRequest } = await import('./stripe.server');
+    const session = await stripeRequest('checkout/sessions', b, order.id);
+    if (!session.url) throw new Error('Não foi possível abrir o pagamento.');
+    const { error: saveError } = await supabaseAdmin.from('pedidos').update({ stripe_session_id: session.id }).eq('id', order.id);
+    if (saveError) throw new Error('Não foi possível vincular o pagamento ao pedido.');
+    return { url: session.url };
   });
 
 export const confirmCheckout = createServerFn({ method: 'GET' })
   .inputValidator((d) => z.object({ sessionId: z.string().regex(/^cs_[A-Za-z0-9_]+$/) }).parse(d))
   .handler(async ({ data }) => {
-    const s = await stripe(`checkout/sessions/${data.sessionId}`);
-    const paid = s['payment_status'] === 'paid';
-    const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
-    const email = (s['customer_details'] as { email?: string } | null)?.email ?? null;
-    if (paid) await supabaseAdmin.from('pedidos').update({ status: 'pago', ...(email ? { email } : {}) }).eq('stripe_session_id', data.sessionId).eq('status', 'aguardando_pagamento');
-    const { data: o } = await supabaseAdmin.from('pedidos').select('id,total,status').eq('stripe_session_id', data.sessionId).maybeSingle();
-    return { paid, pedido: o ? { codigo: o.id.slice(0, 8).toUpperCase(), total: Number(o.total), status: o.status } : null };
+    const { syncStripeSession } = await import('./stripe.server');
+    return syncStripeSession(data.sessionId);
   });
 
 export const adminOrders = createServerFn({ method: 'GET' })

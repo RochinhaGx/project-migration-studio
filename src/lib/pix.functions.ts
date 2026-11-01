@@ -3,6 +3,8 @@ import { getRequest } from '@tanstack/react-start/server';
 import { z } from 'zod';
 import { estimateFreight, onlyDigits, orderStatusFromMp, payerSchema, pixFailureFromMp, type PixFailure } from './payment-rules';
 
+import { paymentOrigin } from './payment-origin';
+
 const itemSchema = z.object({ id: z.string().uuid(), quantity: z.number().int().min(1).max(99), color: z.string().max(40), material: z.enum(['PLA', 'PETG']) });
 
 export const createPixPayment = createServerFn({ method: 'POST' })
@@ -45,7 +47,7 @@ export const createPixPayment = createServerFn({ method: 'POST' })
     if (oe || !order) throw new Error('Não foi possível registrar o pedido.');
 
     const [first, ...rest] = data.payer.nome.trim().split(/\s+/);
-    const origin = new URL(req.url).origin;
+    const origin = paymentOrigin(req.url, process.env['APP_URL']);
     const body: Record<string, unknown> = {
       transaction_amount: total,
       description: `Pedido 3D Tech Studio #${order.codigo.toUpperCase()}`,
@@ -62,7 +64,8 @@ export const createPixPayment = createServerFn({ method: 'POST' })
       await supabaseAdmin.from('pedidos').update({ status: 'cancelado' }).eq('id', order.id);
       throw e;
     }
-    await supabaseAdmin.from('pedidos').update({ mp_payment_id: String(payment.id) }).eq('id', order.id);
+    const { error: saveError } = await supabaseAdmin.from('pedidos').update({ mp_payment_id: String(payment.id) }).eq('id', order.id);
+    if (saveError) throw new Error('Não foi possível vincular o Pix ao pedido.');
     const tx = payment.point_of_interaction?.transaction_data;
     if (!tx?.qr_code || !tx.qr_code_base64) throw new Error('O Mercado Pago não retornou o QR Code. Tente novamente.');
     return { orderId: order.id, codigo: order.codigo.toUpperCase(), total, qrCode: tx.qr_code, qrCodeBase64: tx.qr_code_base64, expiresAt: payment.date_of_expiration ?? null };

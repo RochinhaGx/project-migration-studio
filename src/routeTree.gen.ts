@@ -20,6 +20,7 @@ import { Route as SobMedidaRouteImport } from './routes/sob-medida'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAdminPedidosRouteImport } from './routes/_authenticated/admin-pedidos'
 import { Route as AuthenticatedMeusPedidosRouteImport } from './routes/_authenticated/meus-pedidos'
+import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as PersonalizarIndexRouteImport } from './routes/personalizar.index'
 import { Route as PersonalizarModeloRouteImport } from './routes/personalizar.$modelo'
 import { Route as ProdutoIdRouteImport } from './routes/produto.$id'
@@ -82,6 +83,11 @@ const AuthenticatedMeusPedidosRoute =
     path: '/meus-pedidos',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/callback',
+  path: '/callback',
+  getParentRoute: () => AuthRoute,
+} as any)
 const PersonalizarIndexRoute = PersonalizarIndexRouteImport.update({
   id: '/personalizar/',
   path: '/personalizar/',
@@ -111,7 +117,7 @@ const ApiPublicMercadopagoWebhookRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/catalogo': typeof CatalogoRoute
   '/pedido-confirmado': typeof PedidoConfirmadoRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -120,6 +126,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRoute
   '/admin-pedidos': typeof AuthenticatedAdminPedidosRoute
   '/meus-pedidos': typeof AuthenticatedMeusPedidosRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/personalizar/$modelo': typeof PersonalizarModeloRoute
   '/produto/$id': typeof ProdutoIdRoute
   '/personalizar/': typeof PersonalizarIndexRoute
@@ -128,7 +135,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/catalogo': typeof CatalogoRoute
   '/pedido-confirmado': typeof PedidoConfirmadoRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -137,6 +144,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminRoute
   '/admin-pedidos': typeof AuthenticatedAdminPedidosRoute
   '/meus-pedidos': typeof AuthenticatedMeusPedidosRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/personalizar/$modelo': typeof PersonalizarModeloRoute
   '/produto/$id': typeof ProdutoIdRoute
   '/personalizar': typeof PersonalizarIndexRoute
@@ -147,7 +155,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/catalogo': typeof CatalogoRoute
   '/pedido-confirmado': typeof PedidoConfirmadoRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -156,6 +164,7 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/admin-pedidos': typeof AuthenticatedAdminPedidosRoute
   '/_authenticated/meus-pedidos': typeof AuthenticatedMeusPedidosRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/personalizar/$modelo': typeof PersonalizarModeloRoute
   '/produto/$id': typeof ProdutoIdRoute
   '/personalizar/': typeof PersonalizarIndexRoute
@@ -175,6 +184,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/admin-pedidos'
     | '/meus-pedidos'
+    | '/auth/callback'
     | '/personalizar/$modelo'
     | '/produto/$id'
     | '/personalizar/'
@@ -192,6 +202,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/admin-pedidos'
     | '/meus-pedidos'
+    | '/auth/callback'
     | '/personalizar/$modelo'
     | '/produto/$id'
     | '/personalizar'
@@ -210,6 +221,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/admin-pedidos'
     | '/_authenticated/meus-pedidos'
+    | '/auth/callback'
     | '/personalizar/$modelo'
     | '/produto/$id'
     | '/personalizar/'
@@ -220,7 +232,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthRoute: typeof AuthRoute
+  AuthRoute: typeof AuthRouteWithChildren
   CatalogoRoute: typeof CatalogoRoute
   PedidoConfirmadoRoute: typeof PedidoConfirmadoRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
@@ -312,6 +324,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMeusPedidosRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/auth/callback': {
+      id: '/auth/callback'
+      path: '/callback'
+      fullPath: '/auth/callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/personalizar/': {
       id: '/personalizar/'
       path: '/personalizar'
@@ -365,10 +384,20 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface AuthRouteChildren {
+  AuthCallbackRoute: typeof AuthCallbackRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthCallbackRoute: AuthCallbackRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
-  AuthRoute: AuthRoute,
+  AuthRoute: AuthRouteWithChildren,
   CatalogoRoute: CatalogoRoute,
   PedidoConfirmadoRoute: PedidoConfirmadoRoute,
   ResetPasswordRoute: ResetPasswordRoute,

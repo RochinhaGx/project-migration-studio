@@ -1,4 +1,5 @@
 import { orderStatusFromMp } from './payment-rules';
+import { paymentMatchesOrder } from './webhook-signatures';
 
 type MpPayment = {
   id: number;
@@ -29,10 +30,13 @@ export async function syncMpPayment(paymentId: string) {
   const payment = await mpRequest(`v1/payments/${encodeURIComponent(paymentId)}`);
   const next = orderStatusFromMp(payment.status);
   const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
-  if (next) {
-    let q = supabaseAdmin.from('pedidos').update({ status: next }).eq('mp_payment_id', String(payment.id)).eq('status', 'aguardando_pagamento');
-    if (payment.external_reference) q = q.eq('id', payment.external_reference);
-    await q;
+  const { data: order, error } = await supabaseAdmin.from('pedidos').select('id,total,status').eq('mp_payment_id', String(payment.id)).maybeSingle();
+  if (error) throw new Error('Não foi possível conferir o pedido.');
+  if (!order) return payment;
+  if (String(payment.id) !== paymentId || !paymentMatchesOrder(payment.external_reference, payment.transaction_amount, order)) throw new Error('Pix não corresponde ao pedido.');
+  if (next && order.status === 'aguardando_pagamento') {
+    const { error: updateError } = await supabaseAdmin.from('pedidos').update({ status: next }).eq('id', order.id).eq('status', 'aguardando_pagamento');
+    if (updateError) throw new Error('Não foi possível confirmar o Pix.');
   }
   return payment;
 }
