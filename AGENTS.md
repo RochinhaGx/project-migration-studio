@@ -19,3 +19,5 @@
 - Preserve generated Cloud clients and middleware; never import credentials or integration configuration from an uploaded archive.
 - Export customizer STL from the displayed Three.js meshes in millimetres, and share prepared browser files through native sharing with explicit download fallback; WhatsApp links cannot attach files.
 - Pix payments go through Mercado Pago server-side only; the server recomputes product prices and freight (shared rules in src/lib/payment-rules.ts) and order status is always re-read from Mercado Pago, never trusted from webhook payloads or the browser.
+- External deployment must validate matching browser/server destination configuration before building; use APP_URL for payment callbacks behind Hostinger's proxy and a public /auth/callback for external Google sessions, preserving managed preview auth.
+- Payment webhooks require provider signatures, validate event input, re-read provider state, match order references and amounts, and fail on database errors so providers can retry safely.
