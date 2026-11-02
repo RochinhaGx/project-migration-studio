@@ -17,9 +17,9 @@ export function ShopeeExport({ products, onClose }: { products: Product[]; onClo
       <label>Domínio público das imagens<input type="url" required value={origin} onChange={e => setOrigin(e.target.value)} /></label>
       <p className="text-sm text-muted-foreground">Informe o peso do produto embalado. As categorias da Shopee usam códigos próprios; se deixar em branco, selecione-as na Shopee. Confira o canal Shopee Xpress CPF e os dados fiscais antes de publicar.</p>
       {products.map(p => <fieldset key={p.id} className="border-t border-border py-4"><legend className="font-semibold">{p.nome}</legend>
-        <label>Descrição<textarea required maxLength={5000} value={details[p.id]?.description ?? ''} onChange={e => update(p.id, 'description', e.target.value)} /></label>
-        <div className="form-row"><label>Peso embalado (kg)<input type="number" step="any" min="0.000001" required value={details[p.id]?.weight ?? ''} onChange={e => update(p.id, 'weight', e.target.value)} /></label><label>Estoque<input type="number" step="1" min="1" required value={details[p.id]?.stock ?? ''} onChange={e => update(p.id, 'stock', e.target.value)} /></label></div>
-        <label>Imagem de capa pública<input required value={details[p.id]?.cover ?? ''} onChange={e => update(p.id, 'cover', e.target.value)} /></label>
+        <label>Descrição<textarea aria-label="Descrição" required maxLength={5000} value={details[p.id]?.description ?? ''} onChange={e => update(p.id, 'description', e.target.value)} /></label>
+        <div className="form-row"><label>Peso embalado (kg)<input aria-label="Peso embalado (kg)" type="number" step="any" min="0.000001" required value={details[p.id]?.weight ?? ''} onChange={e => update(p.id, 'weight', e.target.value)} /></label><label>Estoque<input aria-label="Estoque" type="number" step="1" min="1" required value={details[p.id]?.stock ?? ''} onChange={e => update(p.id, 'stock', e.target.value)} /></label></div>
+        <label>Imagem de capa pública<input aria-label="Imagem de capa pública" required value={details[p.id]?.cover ?? ''} onChange={e => update(p.id, 'cover', e.target.value)} /></label>
         <label>Código da categoria Shopee (opcional)<input inputMode="numeric" pattern="[0-9]*" value={details[p.id]?.category ?? ''} onChange={e => update(p.id, 'category', e.target.value)} /></label>
       </fieldset>)}
       {error && <p role="alert" className="error-text">{error}</p>}
