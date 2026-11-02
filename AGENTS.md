@@ -21,3 +21,5 @@
 - Pix payments go through Mercado Pago server-side only; the server recomputes product prices and freight (shared rules in src/lib/payment-rules.ts) and order status is always re-read from Mercado Pago, never trusted from webhook payloads or the browser.
 - External deployment must validate matching browser/server destination configuration before building; use APP_URL for payment callbacks behind Hostinger's proxy and a public /auth/callback for external Google sessions, preserving managed preview auth.
 - Payment webhooks require provider signatures, validate event input, re-read provider state, match order references and amounts, and fail on database errors so providers can retry safely.
+- Storefront category tabs come from visible category records, with semantic name-based icons and a generic fallback so new categories appear without code changes.
+- Shopee export runs client-side using the supplied basic template and a lazy-loaded workbook library; require explicit shipping weight and stock instead of inventing inventory or fiscal data.

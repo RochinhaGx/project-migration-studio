@@ -9,6 +9,11 @@ export const getRouter = () => {
     routeTree,
     context: { queryClient },
     scrollRestoration: true,
+    defaultPreload: 'intent',
+    defaultPreloadDelay: 0,
+    defaultPendingMs: 0,
+    defaultPendingMinMs: 0,
+    defaultPendingComponent: () => <div className="page-width py-16" role="status">Carregando…</div>,
     defaultPreloadStaleTime: 0,
   });
 
