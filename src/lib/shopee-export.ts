@@ -29,11 +29,19 @@ export function shopeeRow(product: Product, details: ShopeeDetails, origin: stri
 }
 
 export async function exportShopee(products: Product[], details: Record<string, ShopeeDetails>, origin: string) {
-  const rows = products.map(product => {
+  const { supabase } = await import('@/integrations/supabase/client');
+  const mediaUrl = async (path: string) => {
+    if (!path || path.startsWith('/') || /^https?:\/\//.test(path)) return path;
+    const { data, error } = await supabase.storage.from('product-media').createSignedUrl(path, 60 * 60 * 24 * 7);
+    if (error || !data) throw new Error('Não foi possível preparar as fotos para a Shopee.');
+    return data.signedUrl;
+  };
+  const rows = await Promise.all(products.map(async product => {
     const values = details[product.id];
     if (!values) throw new Error('Confira os dados de todos os produtos selecionados.');
-    return shopeeRow(product, values, origin);
-  });
+    const images = await Promise.all(product.imagens.map(mediaUrl));
+    return shopeeRow({ ...product, imagens: images }, { ...values, cover: await mediaUrl(values.cover) }, origin);
+  }));
   const { default: ExcelJS } = await import('exceljs');
   const response = await fetch('/templates/shopee-basic.xlsx');
   if (!response.ok) throw new Error('Não foi possível carregar o formulário da Shopee.');
