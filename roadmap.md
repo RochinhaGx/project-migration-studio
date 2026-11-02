@@ -1,4 +1,7 @@
 # Requested changes
+- [x] Make navigation respond on one click and preload public pages; browser verified main links and logo.
+- [x] Display admin-created visible categories with icons on the storefront; browser verified Educacional and Páscoa.
+- [x] Select admin products and export the supplied Shopee basic XLSX with explicit weight and stock; authenticated browser download verified. Shopee upload acceptance requires the owner's seller account.
 - [ ] Complete Hostinger Google/payment callback code and safe deployment validation.
 - [ ] Transfer data and register production webhooks: blocked by access to the owner's external account and Hostinger settings.
 - [ ] Put product video in the photo carousel and move the 3D action below thumbnails.
