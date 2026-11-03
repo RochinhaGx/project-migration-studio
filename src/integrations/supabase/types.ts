@@ -38,6 +38,24 @@ export type Database = {
         }
         Relationships: []
       }
+      config_loja: {
+        Row: {
+          key: string
+          updated_at: string
+          valor: Json
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          valor?: Json
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          valor?: Json
+        }
+        Relationships: []
+      }
       pedidos: {
         Row: {
           codigo: string
@@ -142,7 +160,10 @@ export type Database = {
           materiais: string[]
           modelo_3d: string | null
           nome: string
+          personalizacao: Json
           preco: number
+          producao: Json
+          variacoes: Json
           video_url: string | null
         }
         Insert: {
@@ -158,7 +179,10 @@ export type Database = {
           materiais?: string[]
           modelo_3d?: string | null
           nome: string
+          personalizacao?: Json
           preco?: number
+          producao?: Json
+          variacoes?: Json
           video_url?: string | null
         }
         Update: {
@@ -174,7 +198,10 @@ export type Database = {
           materiais?: string[]
           modelo_3d?: string | null
           nome?: string
+          personalizacao?: Json
           preco?: number
+          producao?: Json
+          variacoes?: Json
           video_url?: string | null
         }
         Relationships: []

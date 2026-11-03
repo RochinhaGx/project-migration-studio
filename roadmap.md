@@ -1,4 +1,10 @@
 # Requested changes
+- [ ] Product variations system: admin-managed color options (incl. "cor conforme a foto") and size options with per-option price deltas and dimensions.
+- [ ] 3D printing price calculator: weight + print time + material cost + extras, margin ×1.9; admin fields for weight/time; never invent weight/time.
+- [ ] Dynamic price on product page: visual color/size selectors, custom measures, name/text fields, live price summary, add to bag with full configuration saved to the order.
+- [ ] Direct purchase of personalized products without manual WhatsApp quote.
+- [ ] Replace "LUNA" sample images in personalization with varied products/names; expand personalization options.
+- [ ] Admin panel: manage variations, pricing config, enable/disable direct purchase per product, view cost and suggested price.
 - [x] Make navigation respond on one click and preload public pages; browser verified main links and logo.
 - [x] Display admin-created visible categories with icons on the storefront; browser verified Educacional and Páscoa.
 - [x] Select admin products and export the supplied Shopee basic XLSX with explicit weight and stock; authenticated browser download verified. Shopee upload acceptance requires the owner's seller account.
