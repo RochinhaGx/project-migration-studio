@@ -1,3 +1,7 @@
+import { ProductOptionsEditor } from './product-options-editor';
+import { useQuery } from '@tanstack/react-query';
+import { getPricingConfig } from '@/lib/pricing.functions';
+import { DEFAULT_PRICING } from '@/lib/pricing';
 import { useEffect, useRef, useState } from 'react';
 import { ImagePlus, Film, Box, X, Plus, Trash2, Save, ArrowLeft, ArrowRight, Star } from 'lucide-react';
 import { useServerFn } from '@tanstack/react-start';
@@ -11,7 +15,7 @@ import type { Product } from '@/lib/catalog.functions';
 type Media = { path?: string; file?: File; preview: string };
 const MAX = 20 * 1024 * 1024;
 const MAX_BIG = 500 * 1024 * 1024;
-const PRESET_COLORS = [{ nome: 'Branco', hex: '#F5F5F5' }, { nome: 'Preto', hex: '#1A1A1A' }, { nome: 'Cinza', hex: '#8A8F98' }, { nome: 'Dourado', hex: '#C9A227' }, { nome: 'Inox', hex: '#B8BCC2' }];
+const PRESET_COLORS = [{ nome: 'Branco', hex: '#F5F5F5' }, { nome: 'Preto', hex: '#1A1A1A' }, { nome: 'Cinza', hex: '#8A8F98' }, { nome: 'Dourado', hex: '#C9A227' }, { nome: 'Inox', hex: '#B8BCC2' }, { nome: 'Cor conforme a foto', hex: '#A0A0A0' }];
 
 
 async function signed(path: string) {
@@ -35,8 +39,10 @@ export function ProductForm({ product, onSave, onClose, categories = [] }: { cat
   const [materiais, setMateriais] = useState<string[]>(product?.materiais ?? ['PLA']);
   const [destaque, setDestaque] = useState(product?.destaque ?? false);
   const [ativo, setAtivo] = useState(product?.ativo ?? true);
-  const [cores, setCores] = useState<{ nome: string; hex: string }[]>(() => { const c = (product?.cores as { nome: string; hex: string }[] | null) ?? []; return c.length ? c : [{ nome: 'Preto', hex: '#1A1A1A' }]; });
+  const [cores, setCores] = useState<{ nome: string; hex: string; ajuste?: number | null }[]>(() => { const c = (product?.cores as { nome: string; hex: string; ajuste?: number | null }[] | null) ?? []; return c.length ? c : [{ nome: 'Preto', hex: '#1A1A1A' }]; });
   const [aiBusy, setAiBusy] = useState(false);
+  const [options,setOptions] = useState(() => { const p = productSchema.parse(product ?? {nome:'Nova peça',categoria:'Decoração',preco:0}); return {variacoes:p.variacoes,personalizacao:p.personalizacao,producao:p.producao}; });
+  const pricingFn = useServerFn(getPricingConfig); const pricing = useQuery({queryKey:['pricing'],queryFn:()=>pricingFn()});
   const genFn = useServerFn(generateDescription);
   async function writeWithAi() {
     if (!nome.trim() || !categoria.trim()) return setError('Preencha nome e categoria antes de gerar a descrição.');
@@ -90,7 +96,7 @@ export function ProductForm({ product, onSave, onClose, categories = [] }: { cat
       let modelo_3d: string | null = null;
       if (model) modelo_3d = model.file ? await upload(model.file, 'application/octet-stream') : model.path ?? null;
       const especificacoes = Object.fromEntries(specs.filter((s) => s.k.trim() && s.v.trim()).map((s) => [s.k.trim(), s.v.trim()]));
-      const row = productSchema.parse({ nome, descricao, categoria, preco: preco.replace(',', '.'), materiais, imagens, video_url, modelo_3d, especificacoes, cores: cores.filter((c) => c.nome.trim()).map((c) => ({ nome: c.nome.trim(), hex: c.hex })), destaque, ativo });
+      const row = productSchema.parse({ nome, descricao, categoria, preco: preco.replace(',', '.'), materiais, imagens, video_url, modelo_3d, especificacoes, cores: cores.filter((c) => c.nome.trim()).map((c) => ({ nome: c.nome.trim(), hex: c.hex, ajuste:c.ajuste ?? null })), ...options, destaque, ativo });
       await onSave(row);
     } catch (err) {
       setError(err instanceof Error ? (err.message.startsWith('[') ? 'Confira nome, categoria e preço.' : err.message) : 'Não foi possível salvar.');
@@ -151,13 +157,14 @@ export function ProductForm({ product, onSave, onClose, categories = [] }: { cat
                 <div className="pf-color" key={i}>
                   <input type="color" aria-label="Tom da cor" value={c.hex} onChange={(e) => setCores((l) => l.map((x, j) => j === i ? { ...x, hex: e.target.value.toUpperCase() } : x))} />
                   <input aria-label="Nome da cor" placeholder="Ex.: Preto fosco" value={c.nome} maxLength={40} onChange={(e) => setCores((l) => l.map((x, j) => j === i ? { ...x, nome: e.target.value } : x))} />
-                  <Button type="button" variant="ghost" size="icon" aria-label="Remover cor" disabled={cores.length === 1} onClick={() => setCores((l) => l.filter((_, j) => j !== i))}><Trash2 /></Button>
+                  <input type="number" min={-9999} max={9999} step="0.01" aria-label={`Acréscimo da cor ${c.nome}`} placeholder="Acréscimo R$" value={c.ajuste ?? ''} onChange={e=>setCores(l=>l.map((x,j)=>j===i?{...x,ajuste:e.target.value===''?null:Number(e.target.value)}:x))}/><Button type="button" variant="ghost" size="icon" aria-label="Remover cor" disabled={cores.length === 1} onClick={() => setCores((l) => l.filter((_, j) => j !== i))}><Trash2 /></Button>
                 </div>
               ))}
               <Button type="button" variant="outline" size="sm" disabled={cores.length >= 20} onClick={() => setCores((l) => [...l, { nome: '', hex: '#FF6B35' }])}><Plus />Adicionar cor</Button>
             </div>
           </section>
 
+          <ProductOptionsEditor value={options} onChange={setOptions} pricing={pricing.data ?? DEFAULT_PRICING} onPrice={n=>setPreco(String(n))}/>
           <section className="pf-section">
             <h3>Especificações</h3>
             <div className="pf-specs">
