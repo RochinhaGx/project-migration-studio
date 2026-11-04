@@ -11,7 +11,7 @@ const pricingSchema = z.object({
   potencia_w: z.coerce.number().min(0).max(100000),
   custo_hora_maquina: z.coerce.number().min(0).max(10000),
   taxa_falha: z.coerce.number().min(0).max(1),
-  margem: z.coerce.number().min(1).max(100),
+  margem: z.literal(1.9),
 });
 
 function publicClient() {

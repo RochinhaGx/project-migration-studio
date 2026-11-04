@@ -71,6 +71,8 @@ export type ExtraOption = { nome: string; preco: number };
 
 export type Personalization = {
   ativo?: boolean;
+  compra_direta?: boolean;
+  modelo?: string;
   texto?: boolean;
   medidas?: boolean;
   upload?: boolean;
@@ -101,13 +103,13 @@ export function unitPrice(
   const tamanho = escolha.tamanho
     ? variacoes?.tamanhos?.find((t) => t.nome === escolha.tamanho)
     : undefined;
-  const baseEfetiva = tamanho && Number(tamanho.preco) > 0 ? Number(tamanho.preco) : base;
+  const baseEfetiva = tamanho && tamanho.preco != null ? Number(tamanho.preco) : base;
   const ajusteCor = Number(cores.find((c) => c.nome === escolha.cor)?.ajuste) || 0;
-  const extras = (escolha.extras ?? []).reduce((s, nome) => {
+  const extras = (personalizacao?.ativo === false ? [] : [...new Set(escolha.extras ?? [])]).reduce((s, nome) => {
     const e = personalizacao?.extras?.find((x) => x.nome === nome);
     return s + (e && Number(e.preco) > 0 ? Number(e.preco) : 0);
   }, 0);
-  return round2(baseEfetiva + ajusteCor + extras);
+  return round2(Math.max(0, baseEfetiva + ajusteCor + extras));
 }
 
 /** Detalhamento do preço para o cliente ver quanto paga por cada escolha. */
@@ -122,11 +124,11 @@ export function priceBreakdown(
   const tamanho = escolha.tamanho
     ? variacoes?.tamanhos?.find((t) => t.nome === escolha.tamanho)
     : undefined;
-  if (tamanho && Number(tamanho.preco) > 0) itens.push({ rotulo: `Tamanho ${tamanho.nome}`, valor: Number(tamanho.preco) });
+  if (tamanho && tamanho.preco != null) itens.push({ rotulo: `Tamanho ${tamanho.nome}`, valor: Number(tamanho.preco) });
   else itens.push({ rotulo: 'Preço base', valor: base });
   const ajusteCor = Number(cores.find((c) => c.nome === escolha.cor)?.ajuste) || 0;
   if (ajusteCor !== 0) itens.push({ rotulo: `Cor ${escolha.cor}`, valor: ajusteCor });
-  for (const nome of escolha.extras ?? []) {
+  for (const nome of personalizacao?.ativo === false ? [] : [...new Set(escolha.extras ?? [])]) {
     const e = personalizacao?.extras?.find((x) => x.nome === nome);
     if (e && Number(e.preco) > 0) itens.push({ rotulo: e.nome, valor: Number(e.preco) });
   }

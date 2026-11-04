@@ -1,3 +1,4 @@
+import { checkoutItemSchema, validatedOrderItem } from './product-configuration';
 import { createServerFn } from '@tanstack/react-start';
 import { getRequest } from '@tanstack/react-start/server';
 import { z } from 'zod';
@@ -5,7 +6,7 @@ import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
 import { ORDER_STATUS } from './store-schema';
 import { paymentOrigin } from './payment-origin';
 
-const itemSchema = z.object({ id: z.string().uuid(), quantity: z.number().int().min(1).max(99), color: z.string().max(40), material: z.enum(['PLA', 'PETG']) });
+const itemSchema = checkoutItemSchema;
 
 export const createCheckout = createServerFn({ method: 'POST' })
   .inputValidator((d) => z.object({ items: z.array(itemSchema).min(1).max(50) }).parse(d))
@@ -16,13 +17,12 @@ export const createCheckout = createServerFn({ method: 'POST' })
     const header = req.headers.get('authorization');
     if (header?.startsWith('Bearer ')) { const { data: u } = await supabaseAdmin.auth.getUser(header.slice(7)); owner = u.user?.id ?? null; email = u.user?.email ?? undefined; }
     const ids = [...new Set(data.items.map((i) => i.id))];
-    const { data: rows, error } = await supabaseAdmin.from('produtos').select('id,nome,preco,materiais,cores,ativo').in('id', ids).eq('ativo', true);
+    const { data: rows, error } = await supabaseAdmin.from('produtos').select('id,nome,preco,materiais,cores,variacoes,personalizacao,ativo').in('id', ids).eq('ativo', true);
     if (error) throw new Error('Não foi possível conferir os produtos.');
     const itens = data.items.map((i) => {
       const p = rows?.find((r) => r.id === i.id);
       if (!p) throw new Error('Um produto da sacola não está mais disponível.');
-      if (!p.materiais.includes(i.material)) throw new Error(`Material indisponível para ${p.nome}.`);
-      return { id: p.id, nome: p.nome, preco: Number(p.preco), quantidade: i.quantity, cor: i.color, material: i.material };
+      return validatedOrderItem(p, i);
     });
     const total = itens.reduce((s, i) => s + i.preco * i.quantidade, 0);
     if (total < 1) throw new Error('Valor mínimo para pagamento online é R$ 1,00.');

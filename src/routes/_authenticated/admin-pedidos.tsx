@@ -30,7 +30,7 @@ function OrdersAdmin() {
       <td>#{o.id.slice(0, 8).toUpperCase()}</td>
       <td>{new Date(o.created_at).toLocaleString('pt-BR')}</td>
       <td>{o.email ?? 'Convidado'}</td>
-      <td>{(o.itens as unknown as OrderItem[]).map((i) => `${i.quantidade}× ${i.nome} (${i.cor}, ${i.material})`).join(' · ')}</td>
+      <td>{(o.itens as unknown as OrderItem[]).map((i) => `${i.quantidade}× ${i.nome} (${i.cor}, ${i.material})${i.configuracao ? ` · ${JSON.stringify(i.configuracao)}` : ""}`).join(' · ')}</td>
       <td>{money(Number(o.total))}</td>
       <td><select aria-label={`Status do pedido ${o.id.slice(0, 8)}`} value={o.status} onChange={async (e) => { try { await updateFn({ data: { id: o.id, status: e.target.value as OrderStatus } }); await qc.invalidateQueries({ queryKey: ['admin-orders'] }); toast.success('Status atualizado'); } catch { toast.error('Não foi possível atualizar'); } }}>{Object.entries(ORDER_STATUS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select></td>
     </tr>)}</tbody></table></div>}
