@@ -1,3 +1,4 @@
+import { useServerFn } from '@tanstack/react-start';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
@@ -46,6 +47,7 @@ function timeLeft(ms: number) {
 
 export function PixCheckout({ open, onOpenChange, cep, ship, total }: { open: boolean; onOpenChange: (v: boolean) => void; cep: string; ship: Freight | undefined; total: number }) {
   const { bag, user, clear } = useStore();
+  const createPix = useServerFn(createPixPayment); const checkPix = useServerFn(getPixStatus);
   const navigate = useNavigate();
   const online = useOnline();
   const [form, setForm] = useState({ nome: '', email: '', cpf: '' });
@@ -73,7 +75,7 @@ export function PixCheckout({ open, onOpenChange, cep, ship, total }: { open: bo
     queryKey: ['pix-status', pix?.orderId],
     enabled: !!pix,
     retry: 1,
-    queryFn: () => getPixStatus({ data: { orderId: pix!.orderId } }),
+    queryFn: () => { if (!pix) throw new Error('Pix não gerado.'); return checkPix({ data: { orderId: pix.orderId } }); },
     refetchInterval: (q) => (q.state.data?.paid || q.state.data?.motivo ? false : 4000),
   });
 
@@ -92,7 +94,7 @@ export function PixCheckout({ open, onOpenChange, cep, ship, total }: { open: bo
     if (!ship) { toast.error('Escolha a entrega', { description: 'Calcule o frete pelo CEP antes de pagar.' }); return; }
     setBusy(true); setGenError(null);
     try {
-      const r = await createPixPayment({ data: { payer: p, cep, service: ship.service, items: bag.map((x) => ({ id: x.product.id, quantity: x.quantity, color: x.color, material: x.material as 'PLA' | 'PETG' })) } });
+      const r = await createPix({ data: { payer: p, cep, service: ship.service, items: bag.map((x) => ({ id: x.product.id, quantity: x.quantity, color: x.color, material: x.material as 'PLA' | 'PETG', configuration: x.configuration })) } });
       setCopied(false);
       setPix(r);
     } catch (err) {
