@@ -1,3 +1,4 @@
+- [ ] Add supplied professional nameplates, speech bubble and sculptural letters with editable names, titles and colors; preserve supplied STL components.
 # Requested changes
 - [ ] Product variations system: admin-managed color options (incl. "cor conforme a foto") and size options with per-option price deltas and dimensions.
 - [ ] 3D printing price calculator: weight + print time + material cost + extras, margin ×1.9; admin fields for weight/time; never invent weight/time.
