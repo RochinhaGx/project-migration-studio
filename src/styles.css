@@ -597,3 +597,8 @@ html,body{overflow-x:hidden;}
 .video-thumbnail { color:var(--foreground); background:var(--muted); }
 .studio-field textarea { width:100%; resize:vertical; border:1px solid var(--border); border-radius:6px; padding:10px 12px; background:var(--background); font-size:14px; }
 .studio-field input,.studio-field textarea { min-width:0; }
+.kit-builder{display:grid;gap:.6rem}
+.kit-slots{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.5rem}
+.kit-slot{min-height:3rem;border:1.5px dashed var(--border);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;gap:.25rem;font-size:.8rem;color:var(--muted-foreground);padding:.25rem;text-align:center}
+.kit-slot.filled{border-style:solid;border-color:var(--primary);color:var(--foreground);background:var(--secondary)}
+.kit-pieces{display:flex;flex-wrap:wrap;gap:.4rem}
