@@ -10,7 +10,7 @@ export function productOptions(p: { cores: unknown; variacoes: unknown; personal
 }
 export function configuredPrice(p: ConfigurableProduct, color: string, configuration: ItemConfiguration = {}) {
   const o = productOptions(p);
-  return unitPrice(Number(p.preco), o.cores, o.variacoes, o.personalizacao, { cor: color, tamanho: configuration.tamanho, extras: configuration.extras });
+  return unitPrice(Number(p.preco), o.cores, o.variacoes, o.personalizacao, { cor: color, ...(configuration.tamanho !== undefined && { tamanho: configuration.tamanho }), ...(configuration.extras !== undefined && { extras: configuration.extras }) });
 }
 export function validatedOrderItem(p: ConfigurableProduct, input: z.infer<typeof checkoutItemSchema>) {
   const o = productOptions(p); const c = itemConfigurationSchema.parse(input.configuration ?? {});
