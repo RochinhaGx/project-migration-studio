@@ -10,7 +10,7 @@ export function productOptions(p: { cores: unknown; variacoes: unknown; personal
 }
 export function configuredPrice(p: ConfigurableProduct, color: string, configuration: ItemConfiguration = {}) {
   const o = productOptions(p);
-  return unitPrice(Number(p.preco), o.cores, o.variacoes, o.personalizacao, { cor: color, ...(configuration.tamanho !== undefined && { tamanho: configuration.tamanho }), ...(configuration.extras !== undefined && { extras: configuration.extras }) });
+  return unitPrice(Number(p.preco), o.cores, o.variacoes, o.personalizacao, { cor: color, ...(configuration.tamanho !== undefined && { tamanho: configuration.tamanho }), ...(configuration.extras !== undefined && { extras: configuration.extras }), ...(configuration.pecas !== undefined && { pecas: configuration.pecas }) });
 }
 export function validatedOrderItem(p: ConfigurableProduct, input: z.infer<typeof checkoutItemSchema>) {
   const o = productOptions(p); const c = itemConfigurationSchema.parse(input.configuration ?? {});
@@ -26,6 +26,11 @@ export function validatedOrderItem(p: ConfigurableProduct, input: z.infer<typeof
   if (c.parametros && !o.personalizacao.modelo) throw new Error('Modelo indisponível.');
   if (o.personalizacao.modelo && !c.arquivo) throw new Error('Personalize o modelo e envie seu arquivo 3D antes de comprar.');
   if ((c.extras ?? []).some(n => !o.personalizacao.extras.some(e => e.nome === n))) throw new Error('Extra indisponível.');
+  const m = o.variacoes.montagem;
+  if (c.pecas?.length && !m.ativo) throw new Error('Montagem indisponível.');
+  if (m.ativo && !c.pecas?.length) throw new Error(`Escolha as peças de ${p.nome}.`);
+  if ((c.pecas?.length ?? 0) > m.vagas) throw new Error(`Escolha no máximo ${m.vagas} peças.`);
+  if ((c.pecas ?? []).some(n => !m.pecas.some(x => x.nome === n))) throw new Error('Peça indisponível.');
   c.extras = [...new Set(c.extras ?? [])];
   return { id: p.id, nome: p.nome, preco: configuredPrice(p, input.color, c), quantidade: input.quantity, cor: input.color, material: input.material, configuracao: c };
 }

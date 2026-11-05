@@ -79,7 +79,8 @@ export type Personalization = {
   extras?: ExtraOption[];
 };
 
-export type Variations = { tamanhos?: SizeOption[] };
+export type PieceOption = { nome: string; preco: number };
+export type Variations = { tamanhos?: SizeOption[]; montagem?: { ativo?: boolean; vagas?: number; pecas?: PieceOption[] } };
 
 export type ItemConfiguration = {
   cor: string;
@@ -98,7 +99,7 @@ export function unitPrice(
   cores: ColorOption[],
   variacoes: Variations | null | undefined,
   personalizacao: Personalization | null | undefined,
-  escolha: { cor: string; tamanho?: string; extras?: string[] },
+  escolha: { cor: string; tamanho?: string; extras?: string[]; pecas?: string[] },
 ): number {
   const tamanho = escolha.tamanho
     ? variacoes?.tamanhos?.find((t) => t.nome === escolha.tamanho)
@@ -109,7 +110,8 @@ export function unitPrice(
     const e = personalizacao?.extras?.find((x) => x.nome === nome);
     return s + (e && Number(e.preco) > 0 ? Number(e.preco) : 0);
   }, 0);
-  return round2(Math.max(0, baseEfetiva + ajusteCor + extras));
+  const pecas = piecesTotal(variacoes, escolha.pecas);
+  return round2(Math.max(0, baseEfetiva + ajusteCor + extras + pecas));
 }
 
 /** Detalhamento do preço para o cliente ver quanto paga por cada escolha. */
@@ -118,7 +120,7 @@ export function priceBreakdown(
   cores: ColorOption[],
   variacoes: Variations | null | undefined,
   personalizacao: Personalization | null | undefined,
-  escolha: { cor: string; tamanho?: string; extras?: string[] },
+  escolha: { cor: string; tamanho?: string; extras?: string[]; pecas?: string[] },
 ): { rotulo: string; valor: number }[] {
   const itens: { rotulo: string; valor: number }[] = [];
   const tamanho = escolha.tamanho
@@ -132,5 +134,15 @@ export function priceBreakdown(
     const e = personalizacao?.extras?.find((x) => x.nome === nome);
     if (e && Number(e.preco) > 0) itens.push({ rotulo: e.nome, valor: Number(e.preco) });
   }
+  for (const nome of variacoes?.montagem?.ativo ? escolha.pecas ?? [] : []) {
+    const p = variacoes?.montagem?.pecas?.find((x) => x.nome === nome);
+    if (p && Number(p.preco) > 0) itens.push({ rotulo: `Peça ${p.nome}`, valor: Number(p.preco) });
+  }
   return itens;
+}
+
+/** Soma das peças escolhidas no "Monte o seu"; cada vaga conta, mesmo repetindo a peça. */
+export function piecesTotal(variacoes: Variations | null | undefined, pecas: string[] | undefined): number {
+  if (!variacoes?.montagem?.ativo) return 0;
+  return (pecas ?? []).reduce((s, nome) => s + (Number(variacoes.montagem?.pecas?.find((x) => x.nome === nome)?.preco) || 0), 0);
 }
