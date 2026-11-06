@@ -1,5 +1,5 @@
 import { Canvas } from '@react-three/fiber';
-import { Environment, Lightformer, OrbitControls, Text3D, ContactShadows } from '@react-three/drei';
+import { Bounds, Environment, Lightformer, OrbitControls, Text3D, ContactShadows } from '@react-three/drei';
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { Box3, Group, Vector3 } from 'three';
 import { ProfessionalPiece } from './professional-piece';
@@ -186,7 +186,7 @@ export default function CustomizerStudio({ model }: { model: CustomModel }) {
         <ambientLight intensity={0.6} />
         <directionalLight position={[5, 8, 6]} intensity={2} castShadow />
         <Environment resolution={128}><Lightformer intensity={2} position={[0, 5, 2]} scale={[10, 10, 1]} /><Lightformer intensity={1} position={[-5, 1, 2]} rotation-y={Math.PI / 2} scale={[8, 4, 1]} /></Environment>
-        <Suspense fallback={null}><Piece modelRef={modelRef} kind={model.slug} c={c} onDims={d => setDims(prev => Math.abs(prev.x - d.x) + Math.abs(prev.y - d.y) + Math.abs(prev.z - d.z) > 0.001 ? d : prev)} /></Suspense>
+        <Suspense fallback={null}><Bounds fit clip observe margin={1.3}><Piece modelRef={modelRef} kind={model.slug} c={c} onDims={d => setDims(prev => Math.abs(prev.x - d.x) + Math.abs(prev.y - d.y) + Math.abs(prev.z - d.z) > 0.001 ? d : prev)} /></Bounds></Suspense>
         <ContactShadows position={[0, -3, 0]} opacity={0.35} blur={2.5} scale={20} />
         <OrbitControls makeDefault enablePan={false} minDistance={4} maxDistance={25} />
       </Canvas>

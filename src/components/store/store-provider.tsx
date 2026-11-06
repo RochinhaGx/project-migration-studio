@@ -1,6 +1,6 @@
 import { configuredPrice } from '@/lib/product-configuration';
 import type { ItemConfiguration } from '@/lib/store-schema';
-import { createContext,useContext,useState,useEffect,type ReactNode } from 'react';
+import { createContext,useContext,useState,useEffect,useRef,type ReactNode } from 'react';
 import type { Product } from '@/lib/catalog.functions';
 import { supabase } from '@/integrations/supabase/client';
 import { useRouter } from '@tanstack/react-router';
@@ -11,8 +11,8 @@ type Store={bag:BagItem[];add:(p:Product,color:string,material:string,configurat
 // Reuse one context across hot reloads so the shell never sees a stale copy.
 const g=globalThis as typeof globalThis&{__storeCtx?:React.Context<Store|null>};
 const Context=g.__storeCtx??(g.__storeCtx=createContext<Store|null>(null));
-export function StoreProvider({children}:{children:ReactNode}){const router=useRouter();const queryClient=useQueryClient();const [bag,setBag]=useState<BagItem[]>([]);const [search,setSearch]=useState('');const [user,setUser]=useState<User|null>(null);
- useEffect(()=>{void supabase.auth.getUser().then(({data})=>setUser(data.user));const {data}=supabase.auth.onAuthStateChange((event,session)=>{setUser(session?.user??null);if(event==='SIGNED_IN'||event==='SIGNED_OUT'||event==='USER_UPDATED'){void router.invalidate();if(session)void queryClient.invalidateQueries();}});return()=>data.subscription.unsubscribe();},[]);
+export function StoreProvider({children}:{children:ReactNode}){const router=useRouter();const queryClient=useQueryClient();const [bag,setBag]=useState<BagItem[]>([]);const [search,setSearch]=useState('');const [user,setUser]=useState<User|null>(null);const sessionUser=useRef<string|null|undefined>(undefined);
+ useEffect(()=>{const {data}=supabase.auth.onAuthStateChange((event,session)=>{const id=session?.user.id??null;const changed=sessionUser.current!==undefined&&sessionUser.current!==id;sessionUser.current=id;setUser(previous=>previous?.id===id&&event!=='USER_UPDATED'?previous:session?.user??null);if(changed||event==='USER_UPDATED'){queueMicrotask(()=>{void router.invalidate();void queryClient.invalidateQueries();});}});return()=>data.subscription.unsubscribe();},[router,queryClient]);
  return <Context.Provider value={{bag,search,setSearch,user,add:(product,color,material,configuration={})=>setBag(prev=>{const i=prev.findIndex(x=>x.product.id===product.id&&x.color===color&&x.material===material&&JSON.stringify(x.configuration)===JSON.stringify(configuration));return i<0?[...prev,{product,color,material,configuration,unitPrice:configuredPrice(product,color,configuration),quantity:1}]:prev.map((x,j)=>j===i?{...x,quantity:Math.min(99,x.quantity+1)}:x);}),update:(index,delta)=>setBag(prev=>prev.map((x,i)=>i===index?{...x,quantity:Math.max(1,Math.min(99,x.quantity+delta))}:x)),remove:index=>setBag(prev=>prev.filter((_,i)=>i!==index)),clear:()=>setBag([])}}>{children}</Context.Provider>;
 }
 export function useStore(){const ctx=useContext(Context);if(!ctx)throw new Error('Store provider missing');return ctx;}

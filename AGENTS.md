@@ -23,3 +23,6 @@
 - Payment webhooks require provider signatures, validate event input, re-read provider state, match order references and amounts, and fail on database errors so providers can retry safely.
 - Storefront category tabs come from visible category records, with semantic name-based icons and a generic fallback so new categories appear without code changes.
 - Shopee export runs client-side using the supplied basic template and a lazy-loaded workbook library; require explicit shipping weight and stock instead of inventing inventory or fiscal data.
+- Kit assembly defaults to included pieces; shared price calculation and checkout validation read the same inclusion mode so stored piece prices cannot accidentally add charges.
+- Auth notifications invalidate routes only on identity changes or profile updates; repeated sign-in notifications must not restart public navigation.
+- Professional customizer models share the supplied STL components and fit the camera to displayed mesh bounds across viewport sizes.
