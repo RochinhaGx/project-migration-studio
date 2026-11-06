@@ -1,3 +1,4 @@
+- [ ] Finish included-piece kit selection (8 for the wreath), selection summary/reset, optional product fields and navigation/image performance; verify real product and bag.
 - [ ] Add supplied professional nameplates, speech bubble and sculptural letters with editable names, titles and colors; preserve supplied STL components.
 # Requested changes
 - [ ] Product variations system: admin-managed color options (incl. "cor conforme a foto") and size options with per-option price deltas and dimensions.
