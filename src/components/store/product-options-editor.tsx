@@ -40,17 +40,18 @@ export function ProductOptionsEditor({ value, onChange, pricing, onPrice }: { va
 
     <section className="pf-section">
       <h3>Monte o seu (peças para escolher)</h3>
-      <p className="pf-hint">Para kits como a guirlanda: o cliente preenche as vagas escolhendo as peças. O preço de cada peça soma ao preço do produto (use 0 se já estiver incluso).</p>
+      <p className="pf-hint">Na guirlanda, os 8 bonequinhos já estão inclusos no preço. Cadastre as opções para o cliente escolher, sem cobrar por peça.</p>
       <label className="pf-switch"><input type="checkbox" checked={kit.ativo} onChange={e => setKit({ ativo: e.target.checked })} /><span>Cliente monta escolhendo peças</span></label>
       {kit.ativo && <>
+        <label className="pf-switch"><input type="checkbox" checked={kit.inclusas} onChange={e => setKit({ inclusas: e.target.checked })} /><span>Peças inclusas no preço do produto</span></label>
         <div className="form-row">
           <label>Título na página<input value={kit.titulo} maxLength={60} placeholder="Monte sua guirlanda" onChange={e => setKit({ titulo: e.target.value })} /></label>
           <label>Quantas vagas (pinos)<input type="number" min={1} max={20} value={kit.vagas} onChange={e => setKit({ vagas: Math.max(1, Math.min(20, Number(e.target.value) || 1)) })} /></label>
         </div>
-        {kit.pecas.length > 0 && <div className="grid grid-cols-[1fr_120px_auto] gap-2 text-sm text-muted-foreground"><span>Peça (ex.: Papai Noel)</span><span>Preço (R$)</span><span /></div>}
-        {kit.pecas.map((x, i) => <div key={i} className="grid grid-cols-[1fr_120px_auto] gap-2 items-center py-1">
+        {kit.pecas.length > 0 && <div className="text-sm text-muted-foreground">Peças disponíveis{kit.inclusas ? ' · sem acréscimo' : ' · com preço separado'}</div>}
+        {kit.pecas.map((x, i) => <div key={i} className={`grid ${kit.inclusas ? 'grid-cols-[1fr_auto]' : 'grid-cols-[1fr_120px_auto]'} gap-2 items-center py-1`}>
           <input aria-label="Nome da peça" value={x.nome} maxLength={60} onChange={e => setPiece(i, { nome: e.target.value })} />
-          <input aria-label="Preço da peça" type="number" min={0} step="0.01" value={x.preco} onChange={e => setPiece(i, { preco: Number(e.target.value) })} />
+          {!kit.inclusas && <input aria-label="Preço da peça" type="number" min={0} step="0.01" value={x.preco} onChange={e => setPiece(i, { preco: Number(e.target.value) })} />}
           <Button type="button" variant="ghost" size="icon" aria-label="Remover peça" onClick={() => setKit({ pecas: kit.pecas.filter((_, j) => j !== i) })}><Trash2 /></Button>
         </div>)}
         <Button type="button" variant="outline" disabled={kit.pecas.length >= 60} onClick={() => setKit({ pecas: [...kit.pecas, { nome: '', preco: 0 }] })}><Plus />Adicionar peça</Button>

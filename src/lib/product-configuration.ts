@@ -30,6 +30,7 @@ export function validatedOrderItem(p: ConfigurableProduct, input: z.infer<typeof
   if (c.pecas?.length && !m.ativo) throw new Error('Montagem indisponível.');
   if (m.ativo && !c.pecas?.length) throw new Error(`Escolha as peças de ${p.nome}.`);
   if ((c.pecas?.length ?? 0) > m.vagas) throw new Error(`Escolha no máximo ${m.vagas} peças.`);
+  if (m.ativo && m.inclusas && c.pecas?.length !== m.vagas) throw new Error(`Escolha as ${m.vagas} peças inclusas.`);
   if ((c.pecas ?? []).some(n => !m.pecas.some(x => x.nome === n))) throw new Error('Peça indisponível.');
   c.extras = [...new Set(c.extras ?? [])];
   return { id: p.id, nome: p.nome, preco: configuredPrice(p, input.color, c), quantidade: input.quantity, cor: input.color, material: input.material, configuracao: c };

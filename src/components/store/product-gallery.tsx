@@ -9,17 +9,17 @@ type Media = { kind: 'photo' | 'video'; src: string };
 export function ProductGallery({ images, video, model, name, color, hex }: { images: string[]; video?: string | null; model?: string | null; name: string; color: string; hex?: string | undefined }) {
   const photos = images.length ? images : ['/produto-sem-foto.svg'];
   // Vídeo sempre logo após a foto de capa.
-  const media: Media[] = [{ kind: 'photo', src: photos[0]! }, ...(video ? [{ kind: 'video' as const, src: video }] : []), ...photos.slice(1).map(src => ({ kind: 'photo' as const, src }))];
+  const media: Media[] = [{ kind: 'photo', src: photos[0] ?? '/produto-sem-foto.svg' }, ...(video ? [{ kind: 'video' as const, src: video }] : []), ...photos.slice(1).map(src => ({ kind: 'photo' as const, src }))];
   const count = media.length;
   const [selected, setSelected] = useState(0);
   const [view3d, setView3d] = useState(false);
   const pick = (index: number) => { setSelected((index + count) % count); setView3d(false); };
-  const current = media[selected] ?? media[0]!;
+  const current = media[selected] ?? { kind: 'photo', src: photos[0] ?? '/produto-sem-foto.svg' };
   return <div>
     <div className="product-gallery-stage" onKeyDown={e => { if (e.key === 'ArrowRight') pick(selected + 1); if (e.key === 'ArrowLeft') pick(selected - 1); }}>
       {view3d && model ? <Suspense fallback={<div className="model-loading">Carregando visualizador…</div>}><ModelViewer url={model} color={color} hex={hex} onClose={() => setView3d(false)} /></Suspense>
         : current.kind === 'video' ? <video key={current.src} className="detail-main-image product-gallery-video" autoPlay muted loop playsInline controls preload="auto" poster={photos[0]} src={current.src} aria-label={`Vídeo de ${name}`} />
-        : <StoreImage src={current.src} alt={name} className="detail-main-image" width={700} height={700} sizes="(max-width:600px) 100vw, 50vw" loading="eager" />}
+        : <StoreImage src={current.src} alt={name} className="detail-main-image" width={700} height={700} sizes="(max-width:600px) 100vw, 50vw" loading="eager" fetchPriority="high" />}
       {!view3d && count > 1 && <div className="gallery-arrows"><Button variant="outline" size="icon" title="Mídia anterior" aria-label="Mídia anterior" onClick={() => pick(selected - 1)}><ChevronLeft /></Button><Button variant="outline" size="icon" title="Próxima mídia" aria-label="Próxima mídia" onClick={() => pick(selected + 1)}><ChevronRight /></Button></div>}
     </div>
     <div className="thumbnails" aria-label="Fotos e vídeo do produto">

@@ -1,7 +1,8 @@
 import { Canvas } from '@react-three/fiber';
-import { Environment, Lightformer, OrbitControls, Text3D, ContactShadows } from '@react-three/drei';
+import { Bounds, Environment, Lightformer, OrbitControls, Text3D, ContactShadows } from '@react-three/drei';
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { Box3, Group, Vector3 } from 'three';
+import { ProfessionalPiece } from './professional-piece';
 import { ChristmasTree } from './christmas-tree';
 import { treeNames } from '@/lib/christmas-tree';
 import { Link } from '@tanstack/react-router';
@@ -10,11 +11,11 @@ import { ArrowLeft, ArrowUpRight, Download, Image, Share2, RotateCcw, Box, Type,
 import { supabase } from '@/integrations/supabase/client';
 import { capturePreview, downloadFile, exportModelSTL } from '@/lib/customizer-export';
 import { Button } from '@/components/ui/button';
-import { FILAMENTS, FONTS, type CustomModel, type ShapeKind } from '@/lib/customizer';
+import { FILAMENTS, FONTS, PROFESSIONAL_KINDS, type CustomModel, type ShapeKind } from '@/lib/customizer';
 import { submitCustomOrder } from '@/lib/catalog.functions';
 import { orderSchema, whatsapp } from '@/lib/store-schema';
 
-type Config = { texto: string; font: string; spacing: number; size: number; text: string; base: string; cap: string; year: string; depth: number; thick: number };
+type Config = { texto: string; font: string; spacing: number; size: number; text: string; base: string; cap: string; year: string; depth: number; thick: number; title: string };
 type Dims = { x: number; y: number; z: number };
 
 function Letters({ c, depth, color, z = 0 }: { c: Config; depth: number; color: string; z?: number }) {
@@ -94,7 +95,7 @@ function Piece({ kind, c, onDims, modelRef }: { kind: ShapeKind; c: Config; onDi
   }
   return <group ref={modelRef} rotation={[rotX, 0, 0]}><group position={offset}><group ref={whole}>
     {base}
-    <group ref={textRef}>{kind === 'christmas-tree'
+    <group ref={textRef}>{PROFESSIONAL_KINDS.includes(kind) ? <ProfessionalPiece kind={kind} text={c.texto} title={c.title} font={c.font} size={c.size} spacing={c.spacing} textColor={c.text} baseColor={c.base} symbolColor={c.cap} depth={c.depth} thick={c.thick}/> : kind === 'christmas-tree'
       ? <ChristmasTree text={c.texto} year={c.year} font={c.font} size={c.size} spacing={c.spacing} primary={c.base} secondary={c.text} star={c.cap}/>
       : <Letters c={c} depth={textDepth * c.depth} color={c.text} z={textZ} />}</group>
   </group></group></group>;
@@ -109,7 +110,7 @@ function Swatches({ label, value, onChange }: { label: string; value: string; on
 const nameOf = (hex: string) => FILAMENTS.find(f => f.hex === hex)?.nome ?? hex;
 
 export default function CustomizerStudio({ model }: { model: CustomModel }) {
-  const [c, setC] = useState<Config>({ texto: model.texto, font: FONTS[0].url, spacing: 0.02, size: 1, text: model.slug === 'christmas-tree' ? FILAMENTS[3].hex : FILAMENTS[1].hex, base: model.slug === 'christmas-tree' ? FILAMENTS[6].hex : FILAMENTS[3].hex, cap: model.slug === 'christmas-tree' ? FILAMENTS[5].hex : FILAMENTS[0].hex, year: '2026', depth: 1, thick: 1 });
+  const [c, setC] = useState<Config>({ texto: model.texto, font: FONTS[0].url, spacing: 0.02, size: 1, text: model.slug === 'christmas-tree' ? FILAMENTS[3].hex : FILAMENTS[1].hex, base: model.slug === 'christmas-tree' ? FILAMENTS[6].hex : FILAMENTS[3].hex, cap: model.slug === 'christmas-tree' ? FILAMENTS[5].hex : FILAMENTS[0].hex, year: '2026', depth: 1, thick: 1, title: '' });
   const [dims, setDims] = useState<Dims>({ x: 0, y: 0, z: 0 });
   const [busy, setBusy] = useState(false); const [error, setError] = useState(''); const [link, setLink] = useState('');
   const modelRef = useRef<Group>(null);
@@ -130,7 +131,7 @@ export default function CustomizerStudio({ model }: { model: CustomModel }) {
     e.preventDefault(); setError(''); setBusy(true);
     try {
       const f = new FormData(e.currentTarget);
-      const resumo = `Modelo personalizado: ${model.nome}\nTexto: ${c.texto}${model.slug === 'christmas-tree' ? `\nAno: ${c.year || 'Sem ano'}` : ''}\nFonte: ${fontName}\nEspaçamento: ${c.spacing.toFixed(2)} · Tamanho: ${c.size.toFixed(1)} · Relevo: ${c.depth.toFixed(1)}× · Base: ${c.thick.toFixed(1)}×\nCores — texto: ${nameOf(c.text)}, base: ${nameOf(c.base)}${model.tampa ? `, detalhe: ${nameOf(c.cap)}` : ''}\nDimensões: ${cm(dims.x)} × ${cm(dims.y)} × ${cm(dims.z)} cm`;
+      const resumo = `Modelo personalizado: ${model.nome}\nTexto: ${c.texto}\nTítulo: ${c.title}${model.slug === 'christmas-tree' ? `\nAno: ${c.year || 'Sem ano'}` : ''}\nFonte: ${fontName}\nEspaçamento: ${c.spacing.toFixed(2)} · Tamanho: ${c.size.toFixed(1)} · Relevo: ${c.depth.toFixed(1)}× · Base: ${c.thick.toFixed(1)}×\nCores — texto: ${nameOf(c.text)}, base: ${nameOf(c.base)}${model.tampa ? `, detalhe: ${nameOf(c.cap)}` : ''}\nDimensões: ${cm(dims.x)} × ${cm(dims.y)} × ${cm(dims.z)} cm`;
       const data = orderSchema.parse({ nome: f.get('nome'), contato: f.get('contato'), descricao: resumo, cor: nameOf(c.text).slice(0, 30), arquivo: null, logo_arquivo: null, dimensoes: { unidade: 'cm', largura: cm(dims.x), altura: cm(dims.y), profundidade: cm(dims.z) } });
       if (!modelRef.current || !canvasRef.current || dims.x === 0) throw new Error('Aguarde a peça carregar.');
       const filename = `${model.slug}-${c.texto.replace(/[^a-zA-Z0-9]/g, '-').slice(0, 30)}`;
@@ -171,6 +172,7 @@ export default function CustomizerStudio({ model }: { model: CustomModel }) {
       <Link to="/personalizar" className="studio-back"><ArrowLeft size={14} /> Modelos</Link>
       <span className="eyebrow"><Box size={14}/> SUA PEÇA / 3D</span><h1>{model.nome}</h1>
       {model.slug === 'christmas-tree' ? <><label className="studio-field"><span><Type size={15}/> Nomes da família</span><textarea value={c.texto.replace(/\*/g, '\n')} rows={4} maxLength={160} onChange={e => set('texto', e.target.value)} aria-label="Nomes da família" /></label><label className="studio-field"><span>Ano</span><input value={c.year} inputMode="numeric" maxLength={4} onChange={e => set('year', e.target.value.replace(/\D/g, ''))} aria-label="Ano da árvore" /></label></> : <label className="studio-field"><span><Type size={15}/> Nome / texto</span><input value={c.texto} maxLength={16} onChange={e => set('texto', e.target.value)} aria-label="Texto da peça" /></label>}
+      {PROFESSIONAL_KINDS.includes(model.slug)&&<label className="studio-field"><span>Título / profissão</span><input value={c.title} maxLength={40} onChange={e=>set('title',e.target.value)} aria-label="Título / profissão"/></label>}
       <div className="studio-field"><span>Fonte</span><div className="studio-fonts">{FONTS.map(f => <Button variant="outline" key={f.id} type="button" aria-pressed={c.font === f.url} onClick={() => set('font', f.url)}>{f.nome}</Button>)}</div></div>
       <label className="studio-field"><span>Espaçamento entre letras <b>{c.spacing.toFixed(2)}</b></span><input type="range" min={-0.2} max={1} step={0.01} value={c.spacing} onChange={e => set('spacing', Number(e.target.value))} /></label>
       <label className="studio-field"><span>Tamanho <b>{c.size.toFixed(1)}</b></span><input type="range" min={0.3} max={3} step={0.1} value={c.size} onChange={e => set('size', Number(e.target.value))} /></label>
@@ -178,13 +180,13 @@ export default function CustomizerStudio({ model }: { model: CustomModel }) {
       <label className="studio-field"><span>Espessura da base <b>{c.thick.toFixed(1)}×</b></span><input type="range" min={0.5} max={3} step={0.1} value={c.thick} onChange={e => set('thick', Number(e.target.value))} /></label>
     </aside>
     <div className="studio-stage">
-      <div className="stage-label"><span><Box size={14}/> {c.texto || model.nome}</span><Button variant="outline" size="icon" title="Restaurar personalização" aria-label="Restaurar personalização" onClick={() => setC({ texto: model.texto, font: FONTS[0].url, spacing: 0.02, size: 1, text: model.slug === 'christmas-tree' ? FILAMENTS[3].hex : FILAMENTS[1].hex, base: model.slug === 'christmas-tree' ? FILAMENTS[6].hex : FILAMENTS[3].hex, cap: model.slug === 'christmas-tree' ? FILAMENTS[5].hex : FILAMENTS[0].hex, year: '2026', depth: 1, thick: 1 })}><RotateCcw/></Button></div>
+      <div className="stage-label"><span><Box size={14}/> {c.texto || model.nome}</span><Button variant="outline" size="icon" title="Restaurar personalização" aria-label="Restaurar personalização" onClick={() => setC({ texto: model.texto, font: FONTS[0].url, spacing: 0.02, size: 1, text: model.slug === 'christmas-tree' ? FILAMENTS[3].hex : FILAMENTS[1].hex, base: model.slug === 'christmas-tree' ? FILAMENTS[6].hex : FILAMENTS[3].hex, cap: model.slug === 'christmas-tree' ? FILAMENTS[5].hex : FILAMENTS[0].hex, year: '2026', depth: 1, thick: 1, title: '' })}><RotateCcw/></Button></div>
       <Canvas shadows frameloop="demand" gl={{ preserveDrawingBuffer: true }} onCreated={({ gl }) => { canvasRef.current = gl.domElement; }} camera={{ position: [0, 3, 14], fov: 40 }} dpr={[1, 1.5]}>
         <color attach="background" args={['#f4f4f2']} />
         <ambientLight intensity={0.6} />
         <directionalLight position={[5, 8, 6]} intensity={2} castShadow />
         <Environment resolution={128}><Lightformer intensity={2} position={[0, 5, 2]} scale={[10, 10, 1]} /><Lightformer intensity={1} position={[-5, 1, 2]} rotation-y={Math.PI / 2} scale={[8, 4, 1]} /></Environment>
-        <Suspense fallback={null}><Piece modelRef={modelRef} kind={model.slug} c={c} onDims={d => setDims(prev => Math.abs(prev.x - d.x) + Math.abs(prev.y - d.y) + Math.abs(prev.z - d.z) > 0.001 ? d : prev)} /></Suspense>
+        <Suspense fallback={null}><Bounds fit clip observe margin={1.3}><Piece modelRef={modelRef} kind={model.slug} c={c} onDims={d => setDims(prev => Math.abs(prev.x - d.x) + Math.abs(prev.y - d.y) + Math.abs(prev.z - d.z) > 0.001 ? d : prev)} /></Bounds></Suspense>
         <ContactShadows position={[0, -3, 0]} opacity={0.35} blur={2.5} scale={20} />
         <OrbitControls makeDefault enablePan={false} minDistance={4} maxDistance={25} />
       </Canvas>

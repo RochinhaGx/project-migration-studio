@@ -80,7 +80,7 @@ export type Personalization = {
 };
 
 export type PieceOption = { nome: string; preco: number };
-export type Variations = { tamanhos?: SizeOption[]; montagem?: { ativo?: boolean; vagas?: number; pecas?: PieceOption[] } };
+export type Variations = { tamanhos?: SizeOption[]; montagem?: { ativo?: boolean; inclusas?: boolean; vagas?: number; pecas?: PieceOption[] } };
 
 export type ItemConfiguration = {
   cor: string;
@@ -134,15 +134,15 @@ export function priceBreakdown(
     const e = personalizacao?.extras?.find((x) => x.nome === nome);
     if (e && Number(e.preco) > 0) itens.push({ rotulo: e.nome, valor: Number(e.preco) });
   }
-  for (const nome of variacoes?.montagem?.ativo ? escolha.pecas ?? [] : []) {
+  for (const nome of variacoes?.montagem?.ativo && variacoes.montagem.inclusas === false ? escolha.pecas ?? [] : []) {
     const p = variacoes?.montagem?.pecas?.find((x) => x.nome === nome);
     if (p && Number(p.preco) > 0) itens.push({ rotulo: `Peça ${p.nome}`, valor: Number(p.preco) });
   }
   return itens;
 }
 
-/** Soma das peças escolhidas no "Monte o seu"; cada vaga conta, mesmo repetindo a peça. */
+/** Peças são inclusas por padrão; cobrança separada exige configuração explícita. */
 export function piecesTotal(variacoes: Variations | null | undefined, pecas: string[] | undefined): number {
-  if (!variacoes?.montagem?.ativo) return 0;
+  if (!variacoes?.montagem?.ativo || variacoes.montagem.inclusas !== false) return 0;
   return (pecas ?? []).reduce((s, nome) => s + (Number(variacoes.montagem?.pecas?.find((x) => x.nome === nome)?.preco) || 0), 0);
 }

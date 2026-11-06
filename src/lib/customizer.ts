@@ -1,5 +1,5 @@
-import penholderImage from '@/assets/custom-penholder-new.jpg';
-import frameImage from '@/assets/custom-frame-new.jpg';
+import penholderImage from '@/assets/custom-penholder-varied.jpg';
+import frameImage from '@/assets/custom-frame-varied.jpg';
 // Optional pointers may be absent or contain {} while an asset is replaced.
 // Glob imports let absent files fall back without breaking module resolution.
 const modelAssets = import.meta.glob<unknown>('../assets/custom-*.jpg.asset.json', {
@@ -19,13 +19,13 @@ export function customizerAssetUrl(metadata: unknown): string {
 
 const modelImage = (name: string) => customizerAssetUrl(modelAssets[`../assets/custom-${name}.jpg.asset.json`]);
 
-export type ShapeKind = 'keychain' | 'cabletag' | 'articulated' | 'penholder' | 'frame' | 'piggy' | 'nameplate' | 'planter' | 'christmas-tree' | 'doorsign' | 'bookmark' | 'pettag';
+export type ShapeKind = 'keychain' | 'cabletag' | 'articulated' | 'penholder' | 'frame' | 'piggy' | 'nameplate' | 'planter' | 'christmas-tree' | 'doorsign' | 'bookmark' | 'pettag' | 'wavy-letters' | 'speech-bubble' | 'psychologist' | 'chef' | 'dentist' | 'maker' | 'engineer' | 'lawyer' | 'doctor';
 export type CustomModel = { slug: ShapeKind; nome: string; descricao: string; image: string; texto: string; tampa: boolean };
 
 export const CUSTOM_MODELS: CustomModel[] = [
   { slug: 'christmas-tree', nome: 'Árvore de Natal da família', descricao: 'Nomes, ano e cores em uma árvore só sua.', image: modelImage('christmas-tree'), texto: 'ANA*DAVID*MAMA*PAPA', tampa: true },
-  { slug: 'penholder', nome: 'Porta-canetas com nome', descricao: 'Seu nome com espaço para lápis e canetas.', image: penholderImage, texto: 'LUNA', tampa: false },
-  { slug: 'frame', nome: 'Porta-retrato com nome', descricao: 'Uma moldura personalizada para sua foto.', image: frameImage, texto: 'LUNA', tampa: true },
+  { slug: 'penholder', nome: 'Porta-canetas com nome', descricao: 'Seu nome com espaço para lápis e canetas.', image: penholderImage, texto: 'THEO', tampa: false },
+  { slug: 'frame', nome: 'Porta-retrato com nome', descricao: 'Uma moldura personalizada para sua foto.', image: frameImage, texto: 'SOFIA', tampa: true },
   { slug: 'keychain', nome: 'Chaveiro com nome', descricao: 'Nome em relevo sobre base com argola.', image: modelImage('keychain'), texto: 'Luna', tampa: false },
   { slug: 'cabletag', nome: 'Etiqueta de cabo', descricao: 'Identifique seus cabos com estilo.', image: modelImage('cabletag'), texto: 'JOHN', tampa: true },
   { slug: 'articulated', nome: 'Nome articulado', descricao: 'Letras unidas que se movimentam.', image: modelImage('articulated'), texto: 'ISABELLA', tampa: false },
@@ -34,6 +34,11 @@ export const CUSTOM_MODELS: CustomModel[] = [
   { slug: 'bookmark', nome: 'Marcador de página', descricao: 'Marcador fino com nome e argola para fita.', image: modelImage('bookmark'), texto: 'Leitura', tampa: true },
   { slug: 'pettag', nome: 'Plaquinha de pet', descricao: 'Medalha redonda com o nome do seu pet.', image: modelImage('pettag'), texto: 'THOR', tampa: true },
 ];
+
+export const PROFESSIONAL_KINDS: ShapeKind[] = ['wavy-letters','speech-bubble','psychologist','chef','dentist','maker','engineer','lawyer','doctor'];
+CUSTOM_MODELS.push(...([
+['wavy-letters','Letras onduladas','MARINA'],['speech-bubble','Balão de conversa','OLÁ!'],['psychologist','Placa de psicologia','ANA COSTA'],['chef','Placa de chef','PEDRO LIMA'],['dentist','Placa de dentista','CARLA REIS'],['maker','Placa maker','LEO SILVA'],['engineer','Placa de engenharia','BRUNO ALVES'],['lawyer','Placa de advocacia','JULIA ROCHA'],['doctor','Placa de medicina','RAFAEL LUZ']
+] as const).map(([slug,nome,texto])=>({slug,nome,texto,descricao:'Nome, título e cores personalizados.',image:modelImage(slug),tampa:true})));
 
 export const FONTS = [
   { id: 'helvetiker', nome: 'Moderna', url: '/fonts/helvetiker_bold.typeface.json' },
